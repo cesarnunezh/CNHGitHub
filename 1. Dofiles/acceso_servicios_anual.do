@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-clear all
-use "C:\Users\Carolina\Desktop\Videnza\PdB\02. Eje Pobreza\Enaho - Pobreza\bbdd\enaho01-2021-100.dta"
-=======
 /*==============================================================================
  Nombre del código:			Acceso a servicios hogares
  Autor:		 				Gonzalo Manrique
@@ -13,9 +9,8 @@ use "C:\Users\Carolina\Desktop\Videnza\PdB\02. Eje Pobreza\Enaho - Pobreza\bbdd\
 	1. Direcciones
 	2. Limpieza de base
 	3. Tabulaciones
->>>>>>> Stashed changes
-
 ==============================================================================*/
+
 *	1. Direcciones
 {
 	clear all
