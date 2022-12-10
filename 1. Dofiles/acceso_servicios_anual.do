@@ -1,5 +1,5 @@
 clear all
-use "C:\Users\Carolina\Desktop\Videnza\PdB\02. Eje Pobreza\Enaho - Pobreza\bbdd\enaho01-2021-100.dta"
+use "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data\enaho01-2021-100.dta"
 
 destring ubigeo, replace
 gen depto=ubigeo/10000
