@@ -1,7 +1,7 @@
 /*==============================================================================
  Nombre del código:			Acceso a servicios hogares
- Autor:		 				Gonzalo Manrique
- Objetivo:					Limpiar la ENA 2016 y estimar variables
+ Autor:		 				César Núñez
+ Objetivo:					Limpiar la ENAHO y estimar variables
  Bases a usar:				Encuesta Nacional de Hogares (ENAHO) - 2021
  
  Estructura:
@@ -14,7 +14,9 @@
 *	1. Direcciones
 {
 	clear all
-	global bd0 "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data"
+	global bd "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data"
+	global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
+	global output "D:\1. Documentos\0. Bases de datos\2. ENAHO\3. Output"
 }
 *	2. Limpieza de base
 {
