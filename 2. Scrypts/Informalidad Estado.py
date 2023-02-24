@@ -64,6 +64,28 @@ for file in locals()[f'last_{contador}_files']:
     shutil.move(src_file, dst_folder)
 
 # Extraemos las bases de datos de todos los archivos descargados
+# Generamos un código para generar la lista de archivos
+
+folder_path = "D:/1. Documentos/0. Bases de datos/10. OSCE"
+
+# Generamos una lista que permita identificar los archivos de la carpeta y las fechas de modificación
+files_list = os.listdir(folder_path)
+
+
 # Seteamos el directorio de trabajo
 os.chdir("D:/1. Documentos/0. Bases de datos/10. OSCE")
-df = pd.read_excel('CONOSCE_ORDENESCOMPRAOCTUBRE2018_0.xlsx')
+contador_1=0
+
+#for file in locals()[f'last_{contador}_files']:
+for file in files_list:
+    if contador_1==0 :
+        df = pd.read_excel(file, skiprows=1)
+        servicios = df['TIPOORDEN'] == 'Orden de Servicio'
+        df = df[servicios]
+        contador_1+=1
+    else:
+        df_alterna = pd.read_excel(file, skiprows=1)
+        servicios = df_alterna['TIPOORDEN'] == 'Orden de Servicio'
+        df_alterna = df_alterna[servicios]
+        df = pd.concat([df, df_alterna])
+        contador_1+=1
