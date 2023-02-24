@@ -37,7 +37,7 @@ for trianio in range(1,3):
                     continue
 
 # Movemos los archivos descargados a la carpeta de trabajo
-time.sleep(60)
+time.sleep(120)
 
 # Seteamos la carpeta donde originalmente se descargaron los archivos
 folder_path = "C:/Users/canun/Downloads"
@@ -82,10 +82,15 @@ for file in files_list:
         df = pd.read_excel(file, skiprows=1)
         servicios = df['TIPOORDEN'] == 'Orden de Servicio'
         df = df[servicios]
+        os.remove(file)
         contador_1+=1
     else:
         df_alterna = pd.read_excel(file, skiprows=1)
         servicios = df_alterna['TIPOORDEN'] == 'Orden de Servicio'
         df_alterna = df_alterna[servicios]
         df = pd.concat([df, df_alterna])
+        os.remove(file)
         contador_1+=1
+
+df.to_csv('df_servicios_2018_2023.csv')
+
