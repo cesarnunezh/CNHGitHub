@@ -96,7 +96,7 @@ for file in files_list:
 df.to_csv('df_servicios_2018_2023.csv')
 
 # Abrimos la base de datos y nos quedamos con las variables que necesitamos
-df = pd.read_csv('df_servicios_2018-2023.csv')
+df = pd.read_csv('df_servicios_2018_2023.csv')
 df = df.loc[ : , ['ENTIDAD', 'RUC_ENTIDAD', 'FECHA_REGISTRO', 'FECHA_DE_EMISION', 'MONTO_TOTAL_ORDEN_ORIGINAL', 'DEPARTAMENTO__ENTIDAD', 'RUC_CONTRATISTA', 'NOMBRE_RAZON_CONTRATISTA']]
 
 # identificamos los ruc 10 (personas naturales)
@@ -108,5 +108,8 @@ df['anio_emi'] = df['FECHA_DE_EMISION'].astype(str).apply(lambda x: x[0:4])
 df['mes_emi'] = df['FECHA_DE_EMISION'].astype(str).apply(lambda x: x[5:7])
 
 tabla_1 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi' ] )[['RUC_CONTRATISTA']].count().rename(columns = {'RUC_CONTRATISTA' : "n_ordenes" }).reset_index()
-tabla_2 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi' ] )[['RUC_CONTRATISTA']].value_counts().rename(columns = {'RUC_CONTRATISTA' : "n_proveedores" }).reset_index()
-tabla_3 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi' ] )[['MONTO_TOTAL_ORDEN_ORIGINAL']].sum().rename(columns = {'MONTO_TOTAL_ORDEN_ORIGINAL' : "monto_total" }).reset_index()
+tabla_2 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi' ] )[['RUC_CONTRATISTA']].value_counts().reset_index()
+tabla_3 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi' ] )[['MONTO_TOTAL_ORDEN_ORIGINAL']].sum().rename(columns = {'MONTO_TOTAL_ORDEN_ORIGINAL' : "monto_total_entidad" }).reset_index()
+
+tabla_4 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi', 'RUC_CONTRATISTA' ])[['MONTO_TOTAL_ORDEN_ORIGINAL']].sum().rename(columns = {'MONTO_TOTAL_ORDEN_ORIGINAL' : "monto_total_contratista" }).reset_index()
+tabla_5 = df.groupby( ['RUC_ENTIDAD' , 'anio_emi', 'RUC_CONTRATISTA' ])[['MONTO_TOTAL_ORDEN_ORIGINAL']].mean().rename(columns = {'MONTO_TOTAL_ORDEN_ORIGINAL' : "monto_promedio_contratista" }).reset_index()
