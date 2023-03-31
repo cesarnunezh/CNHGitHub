@@ -1,6 +1,11 @@
 """
+@project: Datos del fútbol peruano
 @author: César Núñez
 """
+################################################################################################
+###############################IMPORTANDO LA DATA###############################################
+################################################################################################
+
 # Importamos las librerías que utilizaremos
 import pandas as pd
 import numpy as np
@@ -42,11 +47,19 @@ for anio in range(2014, 2023) :
     else :
         url= 'https://fbref.com/en/comps/44/' + str(anio) + '/schedule/' + str(anio) + '-Liga-1-Scores-and-Fixtures#sched_all'
         response = requests.get(url).text.replace('<!--', '').replace('-->', '')
-        df_alterna = pd.read_html(response, header=0)[0]
-        df_partidos = pd.concat([df_partidos , df_alterna])
+        df_alterna2 = pd.read_html(response, header=0)[0]
+        df_partidos = pd.concat([df_partidos , df_alterna2])
 
 # Eliminamos las filas que repiten los nombres de las variables y las NaN
 df_partidos = df_partidos.dropna(how='all')
 
 # Guardamos la base de datos.
 df_partidos.to_csv('partidos_liga1.csv', index=False)
+
+################################################################################################
+###############################TRABAJANDO LA DATA###############################################
+################################################################################################
+
+# Seteamos el directorio de trabajo
+os.chdir('D:/1. Documentos/0. Bases de datos/9. Futbol')
+
