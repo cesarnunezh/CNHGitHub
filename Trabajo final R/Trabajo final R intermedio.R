@@ -23,7 +23,7 @@ setwd("D:/1. Documentos/0. Bases de datos/2. ENAHO/1. Data")
 for (i in 2017:2021) {
   
   # create file name using paste0 function
-  file_name <- paste0("enaho01-", i, "-100.dta")
+  file_name <- paste0("https://github.com/cesarnunezh/CNHGitHub/raw/main/Trabajo%20final%20R/enaho01-", i, "-100.dta")
   
   alternative <- read.dta(file_name) |> 
     select('ubigeo','estrato','factor07','p110', 'p110c1', 'p111a', 'p1121', 'p1142', 'p1144', 'mes', 'conglome', 'vivienda', 'hogar', 'dominio') |> 
