@@ -63,3 +63,29 @@ df_partidos.to_csv('partidos_liga1.csv', index=False)
 # Seteamos el directorio de trabajo
 os.chdir('D:/1. Documentos/0. Bases de datos/9. Futbol')
 
+df_partidos = pd.read_csv("partidos_liga1.csv")
+
+df_partidos= df_partidos.rename(columns={'Round': 'Torneo', 'Wk': 'Fecha', 'Venue': 'Estadio', 'Referee': 'Arbitro'})
+
+df_partidos = df_partidos.iloc[: , :-2]
+
+df_partidos['Date'] = pd.to_datetime(df_partidos['Date'])
+
+df_partidos['anio'] = df_partidos['Date'].dt.year
+
+df_partidos['Goles_local'] = pd.Series(dtype=int)
+df_partidos['Goles_visita'] = pd.Series(dtype=int)
+df_partidos['Resultado'] = pd.Series(dtype=str)
+
+for i,rows in df_partidos.iterrows():
+    goles = df_partidos.loc[i,'Score'].split('–')
+
+    df_partidos.loc[i ,'Goles_local'] = goles[0]
+    df_partidos.loc[i ,'Goles_visita'] = goles[1]
+
+    if goles[0] > goles[1]:
+        df_partidos.loc[i , 'Resultado'] = "L"
+    elif goles[0] == goles[1]:
+        df_partidos.loc[i , 'Resultado'] = "E"
+    else:
+        df_partidos.loc[i , 'Resultado'] = "V"
