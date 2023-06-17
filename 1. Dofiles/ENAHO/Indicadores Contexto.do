@@ -15,9 +15,9 @@ Estructura:
 
 * 0. Direcciones
 
-global base1 "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\1. Bases de datos\ENAHO"
-global out1 "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\2. Output Stata"
-global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\1. Bases de datos\ENAHO\Temp"
+global base1 "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data"
+global out1 "D:\1. Documentos\0. Bases de datos\2. ENAHO\3. Output"
+global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 **********************************************************************************************
 * 1. Compilado de años para las bases de datos
@@ -27,7 +27,7 @@ global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF
 	use "$base1\enaho01-2007-100.dta", clear
 	keep $var_1
 	gen año=2007
-	forvalues i= 2008/2019{
+	forvalues i= 2008/2022{
     append using "$base1\enaho01-`i'-100.dta", keep($var_1)
     replace año=`i' if año==.
 	}
@@ -42,7 +42,7 @@ global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF
 	use "$base1\enaho01-2007-200.dta", clear
 	keep $var_2
 	gen año=2007
-	forvalues i= 2008/2019{
+	forvalues i= 2008/2022{
     append using "$base1\enaho01-`i'-200.dta", keep($var_2) force
 	replace año=`i' if año==.
     }
@@ -95,7 +95,7 @@ global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF
 	*Sumaria
 	use "$base1\sumaria-2007.dta", clear
 	gen año=2007
-	forvalues i= 2008/2019{
+	forvalues i= 2008/2022{
     append using "$base1\sumaria-`i'.dta"
 	replace año=`i' if año==.
     }
@@ -115,7 +115,7 @@ global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF
 	lab val dpto dpto 
 
 	sort aniorec dpto
-	merge aniorec dpto using "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\1. Bases de datos\ENAHO\Gasto2019\Bases\deflactores_base2019_new.dta"
+	merge aniorec dpto using "D:\1. Documentos\0. Bases de datos\2. ENAHO\0. Documentación\Gasto2019\Bases\deflactores_base2019_new.dta"
 	tab _m
 	drop if _merge==2
 	drop _m
@@ -181,7 +181,7 @@ global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF
 
 	sort  dominioA
 
-	merge dominioA using "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\1. Bases de datos\ENAHO\Gasto2019\Bases\despacial_ldnew.dta"
+	merge dominioA using "D:\1. Documentos\0. Bases de datos\2. ENAHO\0. Documentación\Gasto2019\Bases\despacial_ldnew.dta"
 	tab _m
 	drop _m
 
@@ -1094,7 +1094,6 @@ restore
 
 	*Tabla general
 	preserve
-	keep if grupo_edad<=3
 	collapse (mean) pobre pobre_extremo if filtro==1 [iw=facpob07], by(año)  
 	gen nac="Nacional"
 	reshape wide pobre pobre_extremo, i(nac) j(año)
