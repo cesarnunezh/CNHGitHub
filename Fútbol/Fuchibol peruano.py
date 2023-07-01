@@ -16,11 +16,9 @@ import time
 # Seteamos el directorio de trabajo
 os.chdir('D:/1. Documentos/0. Bases de datos/9. Futbol')
 
-ligas = ['Liga-1' , 'Primera-Division-Stats', ]
-
 directorio = {'Libertadores'    : 'https://fbref.com/en/comps/14/2022/stats/2022-Copa-Libertadores-Stats',
               'Liga 1 Perú'     : 'https://fbref.com/en/comps/44/2022/stats/2022-Liga-1-Stats',
-              'Sudamericana'    : 'https://fbref.com/en/comps/205/2014/stats/2014-Copa-Sudamericana-Stats',
+              'Sudamericana'    : 'https://fbref.com/en/comps/205/2022/stats/2022-Copa-Sudamericana-Stats',
               'Argentina'       : 'https://fbref.com/en/comps/21/2019-2020/stats/2019-2020-Primera-Division-Stats',
               'Bolivia'         : 'https://fbref.com/en/comps/74/2022/stats/2022-Primera-Division-Stats',
               'Brasil - Serie A': 'https://fbref.com/en/comps/24/2022/stats/2022-Serie-A-Stats',
@@ -34,23 +32,58 @@ directorio = {'Libertadores'    : 'https://fbref.com/en/comps/14/2022/stats/2022
               'Venezuela'       : 'https://fbref.com/en/comps/105/2022/stats/2022-Liga-FUTVE-Stats',
               'España - 2da'    : 'https://fbref.com/en/comps/17/2021-2022/stats/2021-2022-Segunda-Division-Stats'}
 
+ligas = ['Libertadores', 'Perú' , 'Sudamericana', 'Argentina' , 'Bolivia' , 'Brasil-A' , 'Brasil-B', 'Chile' , 'Colombia',
+         'Ecuador', 'Mexico', 'Paraguay' , 'Uruguay' , 'Venezuela' , 'España-B']
+links = ['-Copa-Libertadores-Stats' , '-Liga-1-Stats' , '-Copa-Sudamericana-Stats', '-Primera-Division-Stats', '-Primera-Division-Stats' ,
+         '-Serie-A-Stats', '-Serie-B-Stats' , '-Primera-Division-Stats', '-Primera-A-Stats', '-Serie-A-Stats', '-Liga-MX-Stats',
+         '-Primera-Division-Stats', '-Primera-Division-Stats', '-Liga-FUTVE-Stats', '-Segunda-Division-Stats']
+number = ['14', '44', '205', '21', '74', '24', '38', '35', '41', '58', '31', '61', '45', '105', '28']
+
 
 # Creando la base de datos de jugadores. Como solo hay información desde el 2015, generamos un loop
+contador_0 = 0
 for anio in range(2015, 2023):
+    contador = 0
+    for link in links:
+        try:
+            if anio == 2015 and (ligas[contador] != 'Mexico' and ligas[contador] != 'España-B') and contador_0 == 0:
+                url = 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio) + '/stats/' + str(anio) + link
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_jugadores = pd.read_html(response, header=1)[2]
+                df_jugadores["year"] = anio
+                df_jugadores["ligas"] = ligas[contador]
+                time.sleep(10)
+            elif anio == 2015 and (ligas[contador] != 'Mexico' and ligas[contador] != 'España-B') and contador_0 != 0:
+                url = 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio) + '/stats/' + str(anio) + link
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_alterna = pd.read_html(response, header=1)[2]
+                df_alterna["year"] = anio
+                df_alterna["ligas"] = ligas[contador]
+                df_jugadores = pd.concat([df_jugadores , df_alterna])
+                time.sleep(10)
+            elif (ligas[contador] == 'Argentina' and anio <= 2020 and anio >=2017) or (ligas[contador] == 'Mexico') or (ligas[contador] == 'España-B'):
+                url = 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio-1) + '-' + str(anio) + '/stats/' + str(anio-1) + '-' + str(anio) + link
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_alterna = pd.read_html(response, header=1)[2]
+                df_alterna["year"] = anio
+                df_alterna["ligas"] = ligas[contador]
+                df_jugadores = pd.concat([df_jugadores , df_alterna])
+                time.sleep(5)
+            else:
+                url = 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio) + '/stats/' + str(anio) + link
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_alterna = pd.read_html(response, header=1)[2]
+                df_alterna["year"] = anio
+                df_alterna["ligas"] = ligas[contador]
+                df_jugadores = pd.concat([df_jugadores , df_alterna])
+                time.sleep(5)
 
-    if anio == 2015:
-        url = 'https://fbref.com/en/comps/44/' + str(anio) + '/stats/' + str(anio) + '-Liga-1-Stats'
-        response = requests.get(url).text.replace('<!--', '').replace('-->', '')
-        df_jugadores = pd.read_html(response, header=1)[2]
-        df_jugadores["year"] = anio
-        time.sleep(5)
-    else:
-        url = 'https://fbref.com/en/comps/44/' + str(anio) + '/stats/' + str(anio) + '-Liga-1-Stats'
-        response = requests.get(url).text.replace('<!--', '').replace('-->', '')
-        df_alterna = pd.read_html(response, header=1)[2]
-        df_alterna["year"] = anio
-        df_jugadores = pd.concat([df_jugadores , df_alterna])
-        time.sleep(5)
+        except:
+            print('error en' + str(anio) + ligas[contador])
+
+        contador = contador + 1
+    contador_0 = contador_0 +1
+
 
 # Eliminamos las filas que repiten los nombres de las variables
 df_jugadores = df_jugadores.loc[df_jugadores["Rk"] != 'Rk']
