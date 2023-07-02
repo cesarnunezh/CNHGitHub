@@ -89,19 +89,51 @@ for anio in range(2015, 2023):
 df_jugadores = df_jugadores.loc[df_jugadores["Rk"] != 'Rk']
 
 # Guardamos la base de datos.
-df_jugadores.to_csv('jugadores_liga1.csv', index=False)
+df_jugadores.to_csv('jugadores_latam.csv', index=False)
+
+
+links = ['-Copa-Libertadores-Scores-and-Fixtures' , '-Liga-1-Scores-and-Fixtures' , '-Copa-Sudamericana-Scores-and-Fixtures', '-Primera-Division-Scores-and-Fixtures', '-Primera-Division-Scores-and-Fixtures' ,
+         '-Serie-A-Scores-and-Fixtures', '-Serie-B-Scores-and-Fixtures' , '-Primera-Division-Scores-and-Fixtures', '-Primera-A-Scores-and-Fixtures', '-Serie-A-Scores-and-Fixtures', '-Liga-MX-Scores-and-Fixtures',
+         '-Primera-Division-Scores-and-Fixtures', '-Primera-Division-Scores-and-Fixtures', '-Liga-FUTVE-Scores-and-Fixtures', '-Segunda-Division-Scores-and-Fixtures']
 
 # Creando la base de datos de partidos.
+start_time = time.time()
 
-for anio in range(2014, 2023) :
-    if anio == 2014 :
-        url= 'https://fbref.com/en/comps/44/' + str(anio) + '/schedule/' + str(anio) + '-Liga-1-Scores-and-Fixtures#sched_all'
-        df_partidos = pd.read_html(response, header=0)[0]
-    else :
-        url= 'https://fbref.com/en/comps/44/' + str(anio) + '/schedule/' + str(anio) + '-Liga-1-Scores-and-Fixtures#sched_all'
-        response = requests.get(url).text.replace('<!--', '').replace('-->', '')
-        df_alterna2 = pd.read_html(response, header=0)[0]
-        df_partidos = pd.concat([df_partidos , df_alterna2])
+contador_0 = 0
+for anio in range(2015, 2023) :
+    contador = 0
+    for link in links:
+        try:
+            if anio == 2015 and (ligas[contador] != 'Mexico' and ligas[contador] != 'España-B') and contador_0 == 0:
+                url= 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio) + '/schedule/' + str(anio) + link +'#sched_all'
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_partidos = pd.read_html(response, header=0)[0]
+                df_partidos['year'] = anio
+                df_partidos['liga'] = ligas[contador]
+                time.sleep(10)
+            elif anio == 2015 and (ligas[contador] != 'Mexico' and ligas[contador] != 'España-B') and contador_0 != 0:
+                url= 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio) + '/schedule/' + str(anio) + link +'#sched_all'
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_alterna2 = pd.read_html(response, header=0)[0]
+                df_alterna2['year'] = anio
+                df_alterna2['liga'] = ligas[contador]
+                df_partidos = pd.concat([df_partidos , df_alterna2])
+                time.sleep(5)
+            else :
+                url= 'https://fbref.com/en/comps/' + number[contador] + '/' + str(anio) + '/schedule/' + str(anio) + link +'#sched_all'
+                response = requests.get(url).text.replace('<!--', '').replace('-->', '')
+                df_alterna2 = pd.read_html(response, header=0)[0]
+                df_alterna2['year'] = anio
+                df_alterna2['liga'] = ligas[contador]
+                df_partidos = pd.concat([df_partidos , df_alterna2])
+                time.sleep(5)
+        except:
+            print('error en' + str(anio) + ligas[contador])
+        contador = contador +1
+    contador_0 = contador_0 +1
+
+elapsed_time = time.time() - start_time
+print(f"Execution time: {elapsed_time} seconds")
 
 # Eliminamos las filas que repiten los nombres de las variables y las NaN
 df_partidos = df_partidos.dropna(how='all')
