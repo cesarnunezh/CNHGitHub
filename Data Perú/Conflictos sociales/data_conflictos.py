@@ -1,23 +1,26 @@
-import tabula
 import os
 import pandas as pd
-import camelot
 import re
 import PyPDF2
+import time
+import pdfplumber
+import fitz  # PyMuPDF
+
+start_time = time.time()
 
 # 1. Generamos las funciones que utilizaremos para cada pdf
-def extraer_texto_despues(pdf_path, texto_buscar):
-    with open(pdf_path, 'rb') as pdf_file:
-        pdf_reader = PyPDF2.PdfReader(pdf_file)
+def extract_text_after_target(pdf_path, target_text):
+    pdf_document = fitz.open(pdf_path)
 
-        for pagina_num in range(len(pdf_reader.pages)):
-            pagina = pdf_reader.pages[pagina_num]
-            texto_pagina = pagina.extract_text()
+    for page_num in range(pdf_document.page_count):
+        page = pdf_document.load_page(page_num)
+        text = page.get_text()
 
-            posicion_texto = texto_pagina.find(texto_buscar)
-            if posicion_texto != -1:
-                texto_despues = texto_pagina[posicion_texto + len(texto_buscar):]
-                return texto_despues
+        if target_text in text:
+            target_index = text.index(target_text)
+            extracted_text = text[target_index + len(target_text):]
+            return extracted_text.strip()
+
     return None
 
 # 2. Ruta al archivo PDF que deseas procesar y manejo de los pdf que utilizaremos
@@ -36,51 +39,62 @@ for item in sorted_files:
         name = int(name)
     except:
         name = item[:2]
+        try:
+            name = int(name)
+        except:
+            name = item[:1]
     n_reportes.append(name)
     contador = contador + 1
 
 contador = 0
-for report in sorted_files:
+for pdf in sorted_files:
     try:
-        if n_reportes[contador] > 125 :
-            pdf_path = folder_path + report
-            texto_a_buscar = "PERÚ: CONFLICTOS SOCIOAMBIENTALES ACTIVOS, SEGÚN ACTIVIDAD, "
-            texto_despues = extraer_texto_despues(pdf_path, texto_a_buscar)
+        if n_reportes[contador] > 126 :
+            pdf_path = folder_path + pdf
+            target_text = "PERÚ: CONFLICTOS SOCIOAMBIENTALES ACTIVOS,"
+            extracted_text = extract_text_after_target(pdf_path, target_text)
 
-            # Encontrar los encabezados y los valores usando expresiones regulares
-            encabezados = re.findall(r'^(TOTAL|Minería|Hidrocarburos|Residuos y saneamiento|Otros|Agroindustrial|Energía|Forestales)\s+', texto_despues, re.MULTILINE)
-            valores = re.findall(r'(\d+)\s+(\d+\.\d+)%', texto_despues)
+            lines = extracted_text.strip().split('\n')
+            month_year = lines[0].rsplit(' ', 3)
+            data_lines = lines[5:]
+            # Initialize empty lists to store data
+            data = []
+            columns = ['Actividad', 'Conteo', '%']
 
-            # Crear una lista de diccionarios para construir el DataFrame
-            data = [{'Actividad': encabezados[i], 'Conteo': int(valores[i][0]), '%': float(valores[i][1])} for i in range(len(encabezados))]
+            # Loop through each line and split by spaces
+            for i in range(0, len(data_lines)-1, 3):
+                actividad = data_lines[i]
+                conteo = data_lines[i + 1]
+                porcentaje = data_lines[i + 2]
 
-            # Crear el DataFrame
-            locals()[f'df_{n_reportes[contador]}'] = pd.DataFrame(data)
-            print(n_reportes[contador])
+                data.append([actividad, conteo, porcentaje])
+
+            locals()[f'df_{n_reportes[contador]}']= pd.DataFrame(data, columns=columns)
+            locals()[f'df_{n_reportes[contador]}']['Mes'] = month_year[1]
+            locals()[f'df_{n_reportes[contador]}']['Año'] = month_year[2]
+
+            if contador == 0:
+                df_final = locals()[f'df_{n_reportes[contador]}']
+            else:
+                df_final = pd.concat([df_final,locals()[f'df_{n_reportes[contador]}']], ignore_index=True)
+            del locals()[f'df_{n_reportes[contador]}']
         else:
             print("otra")
-        contador = contador +1
+        contador = contador + 1
     except:
-        print(f'No funciona {n_reportes[contador]}')
-        contador = contador +1
+        contador = contador + 1
         continue
 
-pdf_path = "C:/Users/User/Documents/GitHub/CNHGitHub/Data Perú/Conflictos sociales/pdf_reports_conflictos_sociales/216_202_2.pdf"
+
+# Code or process to measure
+end_time = time.time()
+
+elapsed_time = end_time - start_time
+print("Elapsed time:", elapsed_time, "seconds")
 
 # TEXTO A BUSCAR entre Agosto 2014 a la fecha | 126 a 233 | "PERÚ: CONFLICTOS SOCIOAMBIENTALES ACTIVOS, SEGÚN ACTIVIDAD, "
 # Texto a buscar entre Marzo 2013 y Julio 2014 | 109 a 125 | conflictos socioambientales activos de acuerdo
 # Texto a buscar entre Noviembre 2012  y Febrero 2013 | 105 a 108 | Conflictos socioambientales según sector
 # Antes no hay info de minería
-texto_despues = extraer_texto_despues(pdf_path, texto_a_buscar)
-texto_a_buscar = "PERÚ: CONFLICTOS SOCIOAMBIENTALES ACTIVOS, SEGÚN ACTIVIDAD, "
 
-# Encontrar los encabezados y los valores usando expresiones regulares
-encabezados = re.findall(r'^(TOTAL|Minería|Hidrocarburos|Residuos y saneamiento|Otros|Agroindustrial|Energía|Forestales)\s+', texto_despues, re.MULTILINE)
-valores = re.findall(r'(\d+)\s+(\d+\.\d+)%', texto_despues)
-
-# Crear una lista de diccionarios para construir el DataFrame
-data = [{'Actividad': encabezados[i], 'Conteo': int(valores[i][0]), '%': float(valores[i][1])} for i in range(len(encabezados))]
-
-# Crear el DataFrame
-df = pd.DataFrame(data)
 
