@@ -97,4 +97,27 @@ print("Elapsed time:", elapsed_time, "seconds")
 # Texto a buscar entre Noviembre 2012  y Febrero 2013 | 105 a 108 | Conflictos socioambientales según sector
 # Antes no hay info de minería
 
+'''
+pdf_path = 'C:/Users/User/Documents/GitHub/CNHGitHub/Data Perú/Conflictos sociales/pdf_reports_conflictos_sociales/216_202_2.pdf'
+target_text = "PERÚ: CONFLICTOS SOCIOAMBIENTALES ACTIVOS,"
+extracted_text = extract_text_after_target(pdf_path, target_text)
 
+lines = extracted_text.strip().split('\n')
+month_year = lines[0].rsplit(' ', 3)
+data_lines = lines[5:]
+# Initialize empty lists to store data
+data = []
+columns = ['Actividad', 'Conteo', 'percent']
+
+for i in range(0, len(data_lines)-1, 3):
+    actividad = data_lines[i]
+    conteo = data_lines[i + 1]
+    porcentaje = data_lines[i + 2]
+
+    data.append([actividad, conteo, porcentaje])
+
+df_prueba = pd.DataFrame(data, columns=columns)
+df_prueba['Mes'] = month_year[1]
+df_prueba['Año'] = month_year[2]
+
+'''
