@@ -15,9 +15,13 @@ Estructura:
 
 * 0. Direcciones
 
-global base1 "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data"
+/*global base1 "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data"
 global out1 "D:\1. Documentos\0. Bases de datos\2. ENAHO\3. Output"
 global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
+*/
+	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data"
+	global temp "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\2. Temp"
+	global output "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\3. Output"
 
 **********************************************************************************************
 * 1. Compilado de años para las bases de datos
