@@ -13,9 +13,9 @@
 *	1. Direcciones
 {
 	clear all
-	global bd "D:\1. Documentos\0. Bases de datos\2. ENAHO\1. Data"
-	global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
-	global output "D:\1. Documentos\0. Bases de datos\2. ENAHO\3. Output"
+	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data"
+	global temp "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\2. Temp"
+	global output "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\3. Output"
 }
 
 *	2. Limpieza de base
