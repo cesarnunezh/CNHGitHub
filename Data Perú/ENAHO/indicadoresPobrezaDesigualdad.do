@@ -14,7 +14,7 @@ Estructura:
 
 * 0. Direcciones
 
-	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data"
+	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data\Anual"
 	global temp "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\2. Temp"
 	global output "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\3. Output"
 
@@ -26,7 +26,7 @@ Estructura:
 	drop if _m==2
 	drop _m
 	
-	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza area fac*)
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza pobrezav area fac*)
 	drop if _m==2
 	drop _m
 
@@ -46,6 +46,7 @@ Estructura:
 	gen pobre_extremo=cond(pobreza==1,100,cond(pobreza==.,.,0))
 	gen pobre=cond(pobreza==1 | pobreza==2,100,cond(pobreza==.,.,0))
 	
+	
 	replace estrato = 1 if dominio ==8 
 	gen area2 = estrato <7
 	replace area2=2 if area==0
@@ -62,7 +63,7 @@ Estructura:
 	gen nac="Nacional"
 	reshape wide pobre pobre_extremo, i(nac) j(año)
 	order nac pobre2* pobre_* 
-	export excel using "$out1/datos", sheet("pobreza") sheetreplace firstrow(variables) 
+	export excel using "$output/datos", sheet("pobreza") sheetreplace firstrow(variables) 
 	restore
 
 	*Por área de residencia
@@ -71,7 +72,7 @@ Estructura:
 	collapse (mean) pobre pobre_extremo if filtro==1 [iw=facpob07], by(area año)  
 	reshape wide pobre pobre_extremo, i(area) j(año)
 	order area pobre2* pobre_* 
-	export excel using "$out1/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A5)
+	export excel using "$output/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A5)
 	restore
 
 	*Por departamento
@@ -79,7 +80,7 @@ Estructura:
 	collapse (mean) pobre pobre_extremo if filtro==1 [iw=facpob07], by(dpto año)  
 	reshape wide pobre pobre_extremo, i(dpto) j(año)
 	order dpto pobre2* pobre_* 
-	export excel using "$out1/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A13)
+	export excel using "$output/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A13)
 	restore
 	
 	*Por grupo de edad
@@ -87,7 +88,7 @@ Estructura:
 	collapse (mean) pobre pobre_extremo if filtro==1 [iw=facpob07], by(grupo_edad año)  
 	reshape wide pobre pobre_extremo, i(grupo_edad) j(año)
 	order grupo_edad pobre2* pobre_* 
-	export excel using "$out1/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A66)
+	export excel using "$output/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A66)
 	restore
 
 	*Por lengua materna
@@ -99,7 +100,7 @@ Estructura:
 	drop if p300a==.
 	reshape wide pobre pobre_extremo, i(p300a) j(año)
 	order p300a pobre2* pobre_* 
-	export excel using "$out1/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A80)
+	export excel using "$output/datos", sheet("pobreza") sheetmodify firstrow(variables) cell(A80)
 	restore
 }
 **********************************************************************************************
@@ -316,6 +317,50 @@ Estructura:
 ********************************************************************************
 *	4. Vulnerabilidad económica
 {
+	use "$temp\modulo200.dta", clear
+	merge m:1 año conglome vivienda hogar using "$temp\modulo100.dta", keepusing(nbi* fac*)
+	drop if _m==2
+	drop _m
+	
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza pobrezav area fac*)
+	drop if _m==2
+	drop _m
+
+	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo300.dta", keepusing(p300a fac*)
+	drop if _m==2
+	drop _m
+
+	*Generamos la variable filtro de resientes del hogar
+	gen filtro=0
+	replace filtro=1 if ((p204==1 & p205==2) | (p204==2 & p206==1)) 
+
+	recode p208a (0/5=1) (6/11=2) (12/17=3) (nonmissing=4), gen(grupo_edad)
+	label define grupo_edad 1 "0-5 años" 2 "6-11 años" 3 "12-17 años" 4 "18 a más"
+	label val grupo_edad grupo_edad
+
+	*Pobreza
+	gen pobre_extremo=cond(pobreza==1,100,cond(pobreza==.,.,0))
+	gen pobre=cond(pobreza==1 | pobreza==2,100,cond(pobreza==.,.,0))
+	
+	
+	replace estrato = 1 if dominio ==8 
+	gen area2 = estrato <7
+	replace area2=2 if area==0
+	label define area2 2 rural 1 urbana
+	label val area2 area2
+	
+	recode p300a (1=1) (2=2) (3=3) (4 =4) (nonmissing =.), gen(lenguamat)
+	label define lenguamat 1 "Quechua" 2 "Aymara" 3 "Lenguas Amazónicas" 4 "Castellano"
+	label val lenguamat lenguamat
+	
+	svyset [pweight = factor07], psu(conglome)strata(estrato)
+	
+	gen vulnerable = (pobrezav == 3)
+	svy: mean vulnerable if filtro==1, over(año)
+	table pobrezav año if filtro==1 [iw = facpob07], format(%12.0fc) row
+	table pobrezav area año if filtro==1 [iw = facpob07], format(%12.0fc) row
+
+
 }
 **********************************************************************************************
 *	5. Coeficiente de gini
