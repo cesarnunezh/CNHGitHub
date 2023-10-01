@@ -322,7 +322,7 @@ Estructura:
 	drop if _m==2
 	drop _m
 	
-	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza pobrezav area fac*)
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza pobrezav lineav area fac*)
 	drop if _m==2
 	drop _m
 
