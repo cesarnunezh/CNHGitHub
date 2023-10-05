@@ -355,12 +355,15 @@ Estructura:
 	
 	svyset [pweight = factor07], psu(conglome)strata(estrato)
 	
+	svy: total pobre if filtro==1, over(año area)
+	matrix define results = e(b)
+	matlist results, format(%12.0fc)
+
 	gen vulnerable = (pobrezav == 3)
-	svy: mean vulnerable if filtro==1, over(año)
-	table pobrezav año if filtro==1 [iw = facpob07], format(%12.0fc) row
-	table pobrezav area año if filtro==1 [iw = facpob07], format(%12.0fc) row
-
-
+	svy: total vulnerable if filtro==1, over(año area)
+	matrix define results = e(b)
+	matlist results, format(%12.0fc)
+	
 }
 **********************************************************************************************
 *	5. Coeficiente de gini
