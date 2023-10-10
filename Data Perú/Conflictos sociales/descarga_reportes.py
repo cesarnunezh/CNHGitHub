@@ -61,8 +61,8 @@ def download_pdfs(page_num):
         print(f"{pdf_name} renombrado como {new_filename}.")
 
 # Iterar a través de las páginas (por ejemplo, de la 1 a la 91)
-start_page = 90
-end_page = 91  # Actualiza este valor con el número de la última página
+start_page = 1
+end_page = 2  # Actualiza este valor con el número de la última página
 for page_num in range(start_page, end_page + 1):
     download_pdfs(page_num)
     time.sleep(4)
