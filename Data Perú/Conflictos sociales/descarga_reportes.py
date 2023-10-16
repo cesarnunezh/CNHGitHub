@@ -49,7 +49,8 @@ def download_pdfs(page_num):
 
         # Extraer números del nombre de archivo
         numbers = extract_numbers(pdf_name)
-        new_filename = "_".join(numbers) + ".pdf"
+        number = numbers[0]
+        new_filename = str(number) + ".pdf"
         new_filepath = os.path.join(download_dir, new_filename)
 
         # Renombrar el archivo descargado
@@ -62,7 +63,7 @@ def download_pdfs(page_num):
 
 # Iterar a través de las páginas (por ejemplo, de la 1 a la 91)
 start_page = 1
-end_page = 2  # Actualiza este valor con el número de la última página
+end_page = 96  # Actualiza este valor con el número de la última página
 for page_num in range(start_page, end_page + 1):
     download_pdfs(page_num)
     time.sleep(4)
