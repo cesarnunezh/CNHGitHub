@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.10.2)  2 OCT 2023 16:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10.12) (preloaded format=pdflatex 2023.10.16)  16 OCT 2023 16:43
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -6,7 +6,7 @@ entering extended mode
 **"d:/1. Documentos/0. Bases de datos/0. Dofiles y Scripts/CNH_rep/CV/resume_CNH_eng.tex"
 (d:/1. Documentos/0. Bases de datos/0. Dofiles y Scripts/CNH_rep/CV/resume_CNH_eng.tex
 LaTeX2e <2023-06-01> patch level 1
-L3 programming layer <2023-08-29>
+L3 programming layer <2023-10-10>
 (resume.cls
 Document Class: resume 2010/07/10 v0.9 Resume class
 (C:\Users\canun\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
@@ -171,7 +171,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layoutvoffset=\dimen154
 \Gm@dimlist=\toks19
  (C:\Users\canun\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (C:\Users\canun\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
-File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
+File: l3backend-pdftex.def 2023-10-10 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count274
 \l__pdf_internal_box=\box53
 ) (resume_CNH_eng.aux)
@@ -287,19 +287,19 @@ Underfull \hbox (badness 10000) detected at line 15
 [1
 
 {C:/Users/canun/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 107--112
+Underfull \hbox (badness 10000) in paragraph at lines 110--115
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 116--125
+Underfull \hbox (badness 10000) in paragraph at lines 119--127
 
  []
 
-[2] [3] [4] [5] (resume_CNH_eng.aux)
+[2] [3] (resume_CNH_eng.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
-L3 programming layer <2023-08-29>
+L3 programming layer <2023-10-10>
  ***********
 
 
@@ -312,17 +312,17 @@ Package rerunfilecheck Info: Checksums for `resume_CNH_eng.out':
 (rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8774 strings out of 475248
- 138189 string characters out of 5757813
- 1933801 words of memory out of 5000000
- 30216 multiletter control sequences out of 15000+600000
+ 8771 strings out of 474824
+ 138174 string characters out of 5750976
+ 1937043 words of memory out of 5000000
+ 30639 multiletter control sequences out of 15000+600000
  562409 words of font info for 50 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 78i,6n,81p,937b,525s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 78i,6n,81p,937b,487s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\canun\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1095.pk><C:/Users/canun/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/canun/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/canun/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/canun/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/canun/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on resume_CNH_eng.pdf (5 pages, 108692 bytes).
+Output written on resume_CNH_eng.pdf (3 pages, 100651 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
- 6 named destinations out of 1000 (max. 500000)
+ 61 PDF objects out of 1000 (max. 8388607)
+ 4 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
