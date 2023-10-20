@@ -23,17 +23,26 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 * 1. Compilado de años para las bases de datos
 	*Módulo 100
 {   
-	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p104* p1121 p103 p110 p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o latitud longitud"
-	use "$bd\enaho01-2007-100.dta", clear
+	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p10* p104* p1121 p103 p110* p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o alt* latitud longitud"
+	use "$bd\enaho01-2010-100.dta", clear
 	keep $var_1
-	gen año=2007
-	forvalues i= 2008/2022{
-    append using "$bd\enaho01-`i'-100.dta", keep($var_1)
+	gen año=2010
+	forvalues i= 2011/2022{
+    append using "$bd\enaho01-`i'-100.dta", keep($var_1) force
     replace año=`i' if año==.
 	}
+	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p10* p104* p1121 p103 p110* p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o latitud longitud"
+	forvalues i= 2007/2009{
+    append using "$bd\enaho01-`i'-100.dta", keep($var_1) force
+    replace año=`i' if año==.
+	}
+	
 	replace p111a=p111 if p111a==.
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
+	
+	replace altitud = altura if año ==2019
+	drop altura
 
 	save "$temp\modulo100.dta", replace
 }
@@ -437,7 +446,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	*** Salidas ***
 
 	*** Gasto real promedio percapita mensual***
-	table area aniorec [iw=factornd07], stat(mean gpgru0) 
+	table area año [iw=factornd07], stat(mean gpgru0) 
 	table domin02 aniorec [iw=factornd07], stat(mean gpgru0) 
 	table dpto aniorec [iw=factornd07], stat(mean gpgru0) 
 
@@ -447,6 +456,14 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	table domin02 aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 	table dpto aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 
+	drop pobrezav
+	merge 1:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav)
+	drop if _m==2
+	drop _merge
+	
+	*** Gasto e ingreso real promedio percapita mensual urbano según vulnerabilidad***
+	table pobrezav año if area ==1  [iw=factornd07], stat(mean gpgru0) nformat(%6.0fc)
+	table pobrezav año if area ==1  [iw=factornd07], stat(mean ipcr_0) nformat(%6.0fc)
 	
 	save "$temp\sumaria.dta", replace
 }

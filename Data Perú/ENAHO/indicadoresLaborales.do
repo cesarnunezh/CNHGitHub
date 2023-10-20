@@ -450,6 +450,6 @@ Estructura:
 	** Porcentaje de la población urbana que gana menos del salario mínimo según nivel de pobreza y vulnerabilidad
 	table año pobrezav if filtro==1 & ocu500==1  & area==1 & r5!=1 [iw=fac500a], stat(mean bajo_sm) nformat(%3.2fc) 
 	
-	
+
 	
 }
