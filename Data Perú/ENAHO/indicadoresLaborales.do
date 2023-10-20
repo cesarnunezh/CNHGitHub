@@ -12,16 +12,24 @@ Estructura:
 
 * 0. Direcciones
 
-	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data"
+	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data\Anual"
 	global temp "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\2. Temp"
 	global output "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\3. Output"
 
 **********************************************************************************************
-*	1. POBLACIÓN ECONÓMICAMENTE OCUPADA
+*	1. Generación de variables
 {
 	use "$temp\modulo500.dta", clear
 
-	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* pobre*)
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* pobreza)
+	drop if _m==2
+	drop _merge
+	
+	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing( pobrezav)
+	drop if _m==2
+	drop _merge
+	
+	merge m:1 año conglome vivienda hogar using "$temp\modulo100.dta", keepusing(lat* long*)
 	drop if _m==2
 
 	* Se genera la variable de población ocupada
@@ -46,10 +54,17 @@ Estructura:
 	label define tipo 1 "empleador" 2 "asalariado" 3 "independiente" 4 "Trabajador familiar no remunerado" 5 "Trabajador del hogar" 6 "Otro"
 	label values categoria tipo
 
+	gen pobre = (pobrezav <= 2)
+	gen vulnerable = (pobrezav == 3)
+	
+	gen informal = (ocupinf==1)
+	
 	recode p208a (14/24 =1) (25/44 =3) (45/64 =4) (nonmissing=5), gen(grupo_edad)
 	label define grupo_edad 1 "14-24 años" 3 "25-44 años" 4 "45-64 años" 5 "65 años a más"
 	label val grupo_edad grupo_edad
 
+	gen sin_contrato = (p511a == 7)
+	
 	gen area = estrato <6
 	label drop area
 	label define area 0 rural 1 urbana
@@ -64,6 +79,59 @@ Estructura:
 	label define horasem 1 "Menos de 31 horas" 2 "Entre 31 y 40 horas" 3 "Entre 41 y 50 horas" 4 "Entre 51 y 70 horas" 5 "De 71 a más horas"
 	label val horasem horasem
 
+	recode i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t (.=0)
+	**Con las variables limpias, obtenemos el ingreso anual total proveniente del trabajo. Luego lo hacemos mensual e incluimos las etiquetas a las nuevas variables:
+	egen ingtrabw = rowtotal(i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t)
+	gen ingtram=ingtrabw/(12)
+	label var ingtrabw "Ingreso por trabajo anual"
+	label var ingtram "Ingreso por trabajo mensual"
+	
+	* Creando variable de SM Nominal
+	gen sm=. 
+	destring mes, replace
+	replace sm=500 if (año==2007 & mes<=9)
+	replace sm=530 if (año==2007 & mes>=10)
+	replace sm=550 if año==2008 | año==2009 | (año==2010 & mes!=12)
+	replace sm=580 if (año==2010 & mes==12) | (año==2011 & mes==1)
+	replace sm=600 if año==2011 & (mes>=2 & mes<=7)
+	replace sm=640 if año==2011 & mes==8
+	replace sm=675 if (año==2011 & mes>=9) | (año==2012 & mes<=5)
+	replace sm=750 if (año==2012 & mes>=6) | (año==2013) | (año==2014) | (año==2015) | (año==2016 & mes<5) 
+	replace sm=850 if (año==2016 & mes>=5) | (año==2017) | (año==2018 & mes<=3)
+	replace sm=930 if (año==2018 & mes>=4) | (año ==2019) | (año==2020) | (año==2021) | (año==2022 & mes<5)
+	replace sm=1025 if (año==2022 & mes>=5) 
+	tostring mes, replace format(%02.0f)
+	
+	gen bajo_sm = (ingtram<sm)
+
+	gen     dominioA=1 if dominio==1 & area==1
+	replace dominioA=2 if dominio==1 & area==0
+	replace dominioA=3 if dominio==2 & area==1
+	replace dominioA=4 if dominio==2 & area==0
+	replace dominioA=5 if dominio==3 & area==1
+	replace dominioA=6 if dominio==3 & area==0
+	replace dominioA=7 if dominio==4 & area==1
+	replace dominioA=8 if dominio==4 & area==0
+	replace dominioA=9 if dominio==5 & area==1
+	replace dominioA=10 if dominio==5 & area==0
+	replace dominioA=11 if dominio==6 & area==1
+	replace dominioA=12 if dominio==6 & area==0
+	replace dominioA=13 if dominio==7 & area==1
+	replace dominioA=14 if dominio==7 & area==0
+	replace dominioA=15 if dominio==7 & (dpto==16 | dpto==17 | dpto==25) & area==1
+	replace dominioA=16 if dominio==7 & (dpto==16 | dpto==17 | dpto==25) & area==0
+	replace dominioA=17 if dominio==8 & area==1
+	replace dominioA=17 if dominio==8 & area==0
+
+	lab val dominioA dominioA 
+	
+	gen r5=(p506r4/100)
+	recode r5 (1/2.9 = 1) (3/3.22 = 2) (5/9.9 = 3) (10/33.2 = 4) (35/39 = 5) (41/43.9 = 6) (45/47.99 = 7)  (49/53.2 = 8)  (55/56.3 = 9) (64/66.3 = 10) (68/68.2 77/82.99 = 11) (84/84.3 = 12) (85/85.5= 13) (86/88.9= 14) (90/99.0= 15) (58/63.99 = 16)(69/75.0=17), gen(r51)
+	label define r51 1 "Agricultura, ganadería, silvicultura" 2 "Pesca" 3 "Explotación de minas y canteras" 4 "Industrias manufactureras" 5 "Suministro de electricidad, agua y gas"  6 "Construcción" 7 "Comercio" 8 "Transporte y almacenamiento" 9 "Actividades de alojamiento y de comida" 10 "Servicios financieros"  11 "Actividades inmobiliarias, empresariales y alquiler" 12 "Defensa" 13 "Enseñanza" 14 "Servicios sociales y de salud" 15 "Otros servicios" 16 "Información y comunicaciones" 17 "Actividades profesionales, cientificas y tecnicas"
+	label values r51 r51
+}	
+*	1. POBLACIÓN ECONÓMICAMENTE OCUPADA
+{
 	*Tabla general
 	preserve
 	collapse (sum) ocupada pea (count) ocu500 if filtro==1 [iw=fac500a], by(año)
@@ -361,3 +429,27 @@ Estructura:
 	export excel using "$out1/datos", sheet("ninis") sheetmodify firstrow(variables) cell(A55)
 	restore
 }	
+
+*	4. Ingreso proveniente del trabajo
+{
+	**Finalmente, calculamos el ingreso promedio mensual proveniente del trabajo según región
+	***En el cálculo se incluye las siguientes retricciones: (i) residente, (ii) persona ocupada y
+	***(iii) ingresos positivos y menores de S/. 25 mil para evitar el sesgo de valores extremos
+	table año area if filtro==1 & ocu500==1 & (ingtram>0 & ingtram<=25000) [iw=fac500a], stat(mean ingtram) 
+}
+
+*	5. Empleo y pobreza urbana
+{	
+
+	** Porcentaje de la población urbana sin contrato según nivel de pobreza y vulnerabilidad
+	table año pobrezav if filtro==1 & ocu500==1  & area==1 & r5!=1 [iw=fac500a], stat(mean sin_contrato) nformat(%3.2fc) 
+	
+	** Porcentaje de la población urbana informal fuera de la agricultura según nivel de pobreza y vulnerabilidad
+	table año pobrezav if filtro==1 & ocu500==1  & area==1 & r5!=1 [iw=fac500a], stat(mean informal) nformat(%3.2fc) 
+
+	** Porcentaje de la población urbana que gana menos del salario mínimo según nivel de pobreza y vulnerabilidad
+	table año pobrezav if filtro==1 & ocu500==1  & area==1 & r5!=1 [iw=fac500a], stat(mean bajo_sm) nformat(%3.2fc) 
+	
+	
+	
+}

@@ -18,9 +18,9 @@ Estructura:
 
 * 	0. Direcciones
 {
-global base "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\1. Data\1. Original"
-global temp "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\1. Data\2. Temp"
-global out "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF - VIDENZA\2. Datos\2. Output"
+	global bd "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\1. Data\Anual"
+	global temp "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\2. Temp"
+	global output "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\3. Output"
 }
 ********************************************************************************
 *	1. Pobreza monetaria y multidimensional - ENAHO
@@ -352,7 +352,7 @@ global out "G:\.shortcut-targets-by-id\12iEHNJMWHBwqYCJyyBRAxdzil1-0PrOd\UNICEF 
 {
 	use "$base1\enaho01-2015-700.dta", clear
 		
-	forval			i=2016/2019 {
+	forval			i=2016/2022 {
 	append using "$base1\enaho01-`i'-700.dta"
 	}
 	

@@ -21,9 +21,9 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 **********************************************************************************************
 * 1. Compilado de años para las bases de datos
-   *Módulo 100
+	*Módulo 100
 {   
-	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p104* p1121 p103 p110 p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o"
+	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p104* p1121 p103 p110 p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o latitud longitud"
 	use "$bd\enaho01-2007-100.dta", clear
 	keep $var_1
 	gen año=2007
@@ -36,9 +36,10 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	tostring conglome, replace format(%06.0f)
 
 	save "$temp\modulo100.dta", replace
-	
-   *Módulo 2 
-	global var_2 "conglome vivienda hogar codperso estrato dominio ubigeo p20* facpob07"
+}
+	*Módulo 200 
+{	
+    global var_2 "conglome vivienda hogar codperso estrato dominio ubigeo p20* facpob07"
 	use "$bd\enaho01-2007-200.dta", clear
 	keep $var_2
 	gen año=2007
@@ -50,39 +51,42 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	tostring conglome, replace format(%06.0f)
 
 	save "$temp\modulo200.dta", replace
-
-   *Módulo 3 
-	global var_3 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301* p303 p306 p307 p310 p300a fac*"
+}
+	*Módulo 300 
+{	
+    global var_3 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301* p303 p306 p307 p310 p300a fac*"
 	use "$bd\enaho01a-2007-300.dta", clear
 	keep $var_3
 	gen año=2007
-	forvalues i= 2008/2019{
+	forvalues i= 2008/2022{
     append using "$bd\enaho01a-`i'-300.dta", keep($var_3) force
 	replace año=`i' if año==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo300.dta", replace
-	
-	*Módulo 4
-	global var_4 "conglome vivienda hogar codperso estrato dominio ubigeo p401  p4021 p4022 p4023 p4024 p4025 p4031-p40314 p4091-p40911 p4151_* p4152_* p4153_* p4154_* p417_02 p417_08 p417_11 p417_12 p417_13 p417_14 p419* i416* p419* p2* fac*"
+}	
+	*Módulo 400
+{	
+    global var_4 "conglome vivienda hogar codperso estrato dominio ubigeo p401  p4021 p4022 p4023 p4024 p4025 p4031-p40314 p4091-p40911 p4151_* p4152_* p4153_* p4154_* p417_02 p417_08 p417_11 p417_12 p417_13 p417_14 p419* i416* p419* p2* fac*"
 	use "$bd\enaho01a-2007-400.dta", clear
 	keep $var_4
 	gen año=2007
-	forvalues i= 2008/2019{
+	forvalues i= 2008/2022{
     append using "$bd\enaho01a-`i'-400.dta", force keep($var_4)
 	replace año=`i' if año==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo400.dta", replace
-	
-	*Módulo 5
-	global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p512* p513t i513t i518 i520 p517* p518 p520 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t"
+}	
+	*Módulo 500
+{
+    global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p511* p512* p513t i513t i518 i520 p517* p518 p520 p523 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t mes"
 	use "$bd\enaho01a-2007-500.dta", clear
 	keep $var_5
 	gen año=2007
-	forvalues i= 2008/2019{
+	forvalues i= 2008/2022{
     append using "$bd\enaho01a-`i'-500.dta", keep($var_5) force
 	replace año=`i' if año==.
     }
@@ -90,9 +94,9 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo500.dta", replace
-	
-	{														/*Solo es para minimizar el codigo de sumarias*/
+}	
 	*Sumaria
+{														/*Solo es para minimizar el codigo de sumarias*/
 	use "$bd\sumaria-2007.dta", clear
 	gen año=2007
 	forvalues i= 2008/2022{
@@ -103,8 +107,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 
-	recode gru52hd2-gashog2d (.= 0)
-	recode ingtpu01 ingtpu02 ingtpu03 ingtpu04 ingtpu05 ig03hd1 ig03hd2 ig03hd3 ig03hd4 (.= 0)
+	recode g01hd ig0* insedthd1 paesechd1 ing* *gru* gas* tipocuesti* tipoentre* estrsocial lin* pobrezav ld pobreza (.=0)
 
 	gen aniorec=año
 	gen dpto= real(substr(ubigeo,1,2))
@@ -115,19 +118,19 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	lab val dpto dpto 
 
 	sort aniorec dpto
-	merge aniorec dpto using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2019\Bases\deflactores_base2019_new.dta"
+	merge aniorec dpto using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2022\Bases\deflactores_base2022_new.dta"
 	tab _m
 	drop if _merge==2
 	drop _m
 
+	*ámbito urbano/rural
 	replace estrato = 1 if dominio ==8 
-	gen area = estrato <7
+	gen area = estrato <6
 	replace area=2 if area==0
 	label define area 2 rural 1 urbana
 	label val area area
 
-
-	**REGION NATURAL*
+	*dominios geográficos
 	gen domin02=1 if dominio>=1 & dominio<=3 & area==1
 	replace domin02=2 if dominio>=1 & dominio<=3 & area==2
 	replace domin02=3 if dominio>=4 & dominio<=6 & area==1
@@ -138,19 +141,6 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 	label define domin02 1 "Costa_urbana" 2 "Costa_rural" 3 "Sierra_urbana" 4 "Sierra_rural" 5 "Selva_urbana" 6 "Selva_rural" 7 "Lima_Metropolitana"
 	label value domin02 domin02
-
-	gen region=1 if dominio>=1 & dominio<=3 
-	replace region=1 if dominio==8
-	replace region=2 if dominio>=4 & dominio<=6 
-	replace region=3 if dominio==7 
-
-	label define region 1 "Costa" 2 "Sierra" 3 "Selva"
-
-	gen areag = dominio == 8
-	replace areag = 2 if dominio >= 1 & dominio <= 7 & estrato >= 1 & estrato <= 5
-	replace areag = 3 if dominio >= 1 & dominio <= 7 & estrato >= 6 & estrato <= 8
-	lab define areag 1 "Lima_Metro" 2 "Resto_Urbano" 3 "Rural" 
-	label values areag  areag
 
 	gen     dominioA=1 if dominio==1 & area==1
 	replace dominioA=2 if dominio==1 & area==2
@@ -181,46 +171,32 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 	sort  dominioA
 
-	merge dominioA using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2019\Bases\despacial_ldnew.dta"
+	merge dominioA using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2022\Bases\despacial_ldnew.dta"
 	tab _m
 	drop _m
 
 	gen factornd07=round(factor07*mieperho,1)
 
-	recode dpto (1=24) (2=10)(3=17) (4=9)(5=18) (6=16)(8=12) (9=19) (10=15) (11=6)(12=11) (13=3)(14=7) (15=1)(16=23) /*
-	*/(17=20) (18=4)(19=14) (20=8)(21=13)(22=22)(23=2)(24=5)(24=5)(25=21), gen(recdpto)
-	label define recdpto 1 "Lima" 2 "Tacna" 3 "La Libertad" 4 "Moquega" 5 "Tumbes" 6 "Ica" 7 "Lambayeque" 8 "Piura" 9 "Arequipa" 10 "Ancash" /*
-	*/ 11"Junín" 12 "Cusco" 13 "Puno" 14 "Pasco" 15 "Huanuco" 16 "Cajamarca" 17 "Apurimac" 18 "Ayacucho" 19 "Huancavelica"/*
-	*/ 20 "Madre de Dios" 21 "Ucayali" 22 "San Martín" 23 "Loreto"24 "Amazonas"
-	label val  recdpto recdpto
-
-	gen limareg=1 if(substr(ubigeo,1,4))=="1501"
-	replace limareg=2 if(substr(ubigeo,1,2))=="07"
-	replace limareg=3 if((substr(ubigeo,1,4))>="1502" & (substr(ubigeo,1,4))<"1599")
-
-	label define limareg 1 "Lima Prov" 2 "Prov Const. Callao" 3 "Región Lima"
-	label val limareg limareg
+	gen p = 12 //periodo anual
 
 	svyset [pweight = factornd07], psu(conglome)
 
 
-	*GASTOS REALES
-	***************************************************************************/
-	***CREANDO VARIABLES DEL GASTO DEFLACTADO A PRECIOS DE LIMA Y BASE 2019****/
-	***************************************************************************/
+	****************************************************
 	******Gasto por 8  grupos de la canastas************
-		
-	gen 		gpcrg3= (gru11hd + gru12hd1 + gru12hd2 + gru13hd1 + gru13hd2 + gru13hd3 )/(12*mieperho*ld*i01)
-	gen 		gpcrg6 = ((g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 +g05hd6 +ig06hd)/(12*mieperho*ld*i01))
-	gen 		gpcrg8= ((sg23 + sig24)/(12*mieperho*ld*i01))
-	gen 		gpcrg9= ((gru14hd + gru14hd1 +  gru14hd2 + gru14hd3 + gru14hd4 + gru14hd5 + sg25 + sig26)/(12*mieperho*ld*i01))
-	gen    		gpcrg10= ((gru21hd + gru22hd1 + gru22hd2 + gru23hd1 + gru23hd2 + gru23hd3 + gru24hd)/(12*mieperho*ld*i02))
-	gen     	gpcrg12= ((gru31hd + gru32hd1 + gru32hd2 + gru33hd1 + gru33hd2 + gru33hd3 + gru34hd)/(12*mieperho*ld*i03))
-	gen     	gpcrg14= ((gru41hd + gru42hd1 + gru42hd2 + gru43hd1 + gru43hd2 + gru43hd3 + gru44hd + sg421 + sg42d1 + sg423 + sg42d3)/(12*mieperho*ld*i04))
-	gen    		gpcrg16= ((gru51hd + gru52hd1 + gru52hd2 + gru53hd1 + gru53hd2 + gru53hd3 + gru54hd)/(12*mieperho*ld*i05))
-	gen     	gpcrg18= ((gru61hd + gru62hd1 + gru62hd2 + gru63hd1 + gru63hd2 + gru63hd3 + gru64hd + g07hd + ig08hd + sg422 + sg42d2)/(12*mieperho*ld*i06))
-	gen     	gpcrg19= ((gru71hd + gru72hd1 + gru72hd2 + gru73hd1 + gru73hd2 + gru73hd3 + gru74hd + sg42 + sg42d)/(12*mieperho*ld*i07))
-	gen     	gpcrg21= ((gru81hd + gru82hd1 + gru82hd2 + gru83hd1 + gru83hd2 + gru83hd3 + gru84hd)/(12*mieperho*ld*i08))
+	****************************************************
+
+	gen 		gpcrg3= (gru11hd + gru12hd1 + gru12hd2 + gru13hd1 + gru13hd2 + gru13hd3 )/(p*mieperho*ld*i01) 
+	gen 		gpcrg6 = ((g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 +g05hd6 +ig06hd)/(p*mieperho*ld*i01)) 
+	gen 		gpcrg8= ((sg23 + sig24)/(p*mieperho*ld*i01)) 
+	gen 		gpcrg9= ((gru14hd + gru14hd1 +  gru14hd2 + gru14hd3 + gru14hd4 + gru14hd5 + sg25 + sig26)/(p*mieperho*ld*i01)) 
+	gen    		gpcrg10= ((gru21hd + gru22hd1 + gru22hd2 + gru23hd1 + gru23hd2 + gru23hd3 + gru24hd)/(p*mieperho*ld*i02)) 
+	gen     	gpcrg12= ((gru31hd + gru32hd1 + gru32hd2 + gru33hd1 + gru33hd2 + gru33hd3 + gru34hd)/(p*mieperho*ld*i03)) 
+	gen     	gpcrg14= ((gru41hd + gru42hd1 + gru42hd2 + gru43hd1 + gru43hd2 + gru43hd3 + gru44hd + sg421 + sg42d1 + sg423 + sg42d3)/(p*mieperho*ld*i04)) 
+	gen    		gpcrg16= ((gru51hd + gru52hd1 + gru52hd2 + gru53hd1 + gru53hd2 + gru53hd3 + gru54hd)/(p*mieperho*ld*i05)) 
+	gen     	gpcrg18= ((gru61hd + gru62hd1 + gru62hd2 + gru63hd1 + gru63hd2 + gru63hd3 + gru64hd + g07hd + ig08hd + sg422 + sg42d2)/(p*mieperho*ld*i06)) 
+	gen     	gpcrg19= ((gru71hd + gru72hd1 + gru72hd2 + gru73hd1 + gru73hd2 + gru73hd3 + gru74hd + sg42 + sg42d)/(p*mieperho*ld*i07)) 
+	gen     	gpcrg21= ((gru81hd + gru82hd1 + gru82hd2 + gru83hd1 + gru83hd2 + gru83hd3 + gru84hd)/(p*mieperho*ld*i08)) 
 
 	label var gpcrg3	"Preparados dentro del hogar"
 	label var gpcrg6	"Adquiridos Fuera del hogar 559"
@@ -233,7 +209,6 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	label var gpcrg18	"Transporte y comunicaciones"
 	label var gpcrg19	"Esparcimiento diversión y cultura"
 	label var gpcrg21	"Otros gastos de bienes y servicios"
-
 
 	*RECODIFICANDO POR grupo de gastos
 	**********************************
@@ -263,41 +238,41 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	*******************************
 	*TIPOS DE ADQUISICION DE GASTOS
 
-	gen   	  	gpcnr1 =(((gru11hd +gru14hd + sg23 + g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6  +sg25)/(12*mieperho *  ld*i01))/*
-						*/ + (gru21hd/(12*mieperho *  ld*i02)) + /*
-						*/ (gru31hd/(12*mieperho *  ld*i03)) + ((gru41hd + sg421 + sg423)/(12*mieperho *  ld*i04)) + /*
-						*/ (gru51hd/(12*mieperho *  ld*i05)) + ((gru61hd + g07hd + sg422)/(12*mieperho *  ld*i06)) + /*
-						*/ ((gru71hd + sg42)/(12*mieperho *  ld*i07)) + (gru81hd/(12*mieperho *  ld*i08)))
+	gen   	  	gpcnr1 =(((gru11hd +gru14hd + sg23 + g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6  +sg25)/(p*mieperho *  ld*i01))/*
+						*/ + (gru21hd/(p*mieperho *  ld*i02)) + /*
+						*/ (gru31hd/(p*mieperho *  ld*i03)) + ((gru41hd + sg421 + sg423)/(p*mieperho *  ld*i04)) + /*
+						*/ (gru51hd/(p*mieperho *  ld*i05)) + ((gru61hd + g07hd + sg422)/(p*mieperho *  ld*i06)) + /*
+						*/ ((gru71hd + sg42)/(p*mieperho *  ld*i07)) + (gru81hd/(p*mieperho *  ld*i08))) 
 
-	gen     	gpcnr2 =(((gru12hd1 + gru14hd1)/(12*mieperho *  ld*i01)) + (gru22hd1/(12*mieperho *  ld*i02)) + /*
-						*/ (gru32hd1/(12*mieperho *  ld*i03)) + (gru42hd1/(12*mieperho *  ld*i04)) + /*
-						*/ (gru52hd1/(12*mieperho *  ld*i05)) + (gru62hd1/(12*mieperho *  ld*i06)) + /*
-						*/ (gru72hd1/(12*mieperho *  ld*i07)) + (gru82hd1/(12*mieperho *  ld*i08)))
+	gen     	gpcnr2 =(((gru12hd1 + gru14hd1)/(p*mieperho *  ld*i01)) + (gru22hd1/(p*mieperho *  ld*i02)) + /*
+						*/ (gru32hd1/(p*mieperho *  ld*i03)) + (gru42hd1/(p*mieperho *  ld*i04)) + /*
+						*/ (gru52hd1/(p*mieperho *  ld*i05)) + (gru62hd1/(p*mieperho *  ld*i06)) + /*
+						*/ (gru72hd1/(p*mieperho *  ld*i07)) + (gru82hd1/(p*mieperho *  ld*i08)))  
 						
-	gen     	gpcnr3 = (((gru12hd2 + gru14hd2)/(12*mieperho *  ld*i01)) + (gru22hd2/(12*mieperho *  ld*i02)) + /*
-						*/ (gru32hd2/(12*mieperho *  ld*i03)) + (gru42hd2/(12*mieperho *  ld*i04)) + /*
-						*/ (gru52hd2/(12*mieperho *  ld*i05)) + (gru62hd2/(12*mieperho *  ld*i06)) + /*
-						*/ (gru72hd2/(12*mieperho *  ld*i07)) + (gru82hd2/(12*mieperho *  ld*i08)))
+	gen     	gpcnr3 = (((gru12hd2 + gru14hd2)/(p*mieperho *  ld*i01)) + (gru22hd2/(p*mieperho *  ld*i02)) + /*
+						*/ (gru32hd2/(p*mieperho *  ld*i03)) + (gru42hd2/(p*mieperho *  ld*i04)) + /*
+						*/ (gru52hd2/(p*mieperho *  ld*i05)) + (gru62hd2/(p*mieperho *  ld*i06)) + /*
+						*/ (gru72hd2/(p*mieperho *  ld*i07)) + (gru82hd2/(p*mieperho *  ld*i08)))   
 						
-	gen    		gpcnr4 =(((gru13hd1 + gru14hd3+ sig24 +sig26)/(12*mieperho *  ld*i01)) + (gru23hd1/(12*mieperho *  ld*i02)) + /*
-						*/ (gru33hd1/(12*mieperho *  ld*i03)) + (gru43hd1/(12*mieperho *  ld*i04)) + /*
-						*/ (gru53hd1/(12*mieperho *  ld*i05)) + (gru63hd1/(12*mieperho *  ld*i06)) + /*
-						*/ (gru73hd1/(12*mieperho *  ld*i07)) + (gru83hd1/(12*mieperho *  ld*i08)))
+	gen    		gpcnr4 =(((gru13hd1 + gru14hd3+ sig24 +sig26)/(p*mieperho *  ld*i01)) + (gru23hd1/(p*mieperho *  ld*i02)) + /*
+						*/ (gru33hd1/(p*mieperho *  ld*i03)) + (gru43hd1/(p*mieperho *  ld*i04)) + /*
+						*/ (gru53hd1/(p*mieperho *  ld*i05)) + (gru63hd1/(p*mieperho *  ld*i06)) + /*
+						*/ (gru73hd1/(p*mieperho *  ld*i07)) + (gru83hd1/(p*mieperho *  ld*i08)))  
 						
-	gen     	gpcnr5 =(((gru13hd2 + gru14hd4 + ig06hd)/(12*mieperho *  ld*i01)) + (gru23hd2/(12*mieperho *  ld*i02)) + /*
-						*/ (gru33hd2/(12*mieperho *  ld*i03)) + ((gru43hd2 + sg42d1 + sg42d3)/(12*mieperho *  ld*i04)) + /*
-						*/ (gru53hd2/(12*mieperho *  ld*i05)) + ((gru63hd2 +ig08hd + sg42d2)/(12*mieperho *  ld*i06)) + /*
-						 */ ((gru73hd2 + sg42d)/(12*mieperho *  ld*i07)) + (gru83hd2/(12*mieperho *  ld*i08)))
+	gen     	gpcnr5 =(((gru13hd2 + gru14hd4 + ig06hd)/(p*mieperho *  ld*i01)) + (gru23hd2/(p*mieperho *  ld*i02)) + /*
+						*/ (gru33hd2/(p*mieperho *  ld*i03)) + ((gru43hd2 + sg42d1 + sg42d3)/(p*mieperho *  ld*i04)) + /*
+						*/ (gru53hd2/(p*mieperho *  ld*i05)) + ((gru63hd2 +ig08hd + sg42d2)/(p*mieperho *  ld*i06)) + /*
+						 */ ((gru73hd2 + sg42d)/(p*mieperho *  ld*i07)) + (gru83hd2/(p*mieperho *  ld*i08)))  
 					
-	gen   		  gpcnr6 =(((gru13hd3 + gru14hd5)/(12*mieperho *  ld*i01)) + (gru23hd3/(12*mieperho *  ld*i02)) + /*
-						*/ (gru33hd3/(12*mieperho *  ld*i03)) + (gru43hd3/(12*mieperho *  ld*i04)) + /*
-						*/ (gru53hd3/(12*mieperho *  ld*i05)) + (gru63hd3/(12*mieperho *  ld*i06)) + /*
-						*/ (gru73hd3/(12*mieperho *  ld*i07)) + (gru83hd3/(12*mieperho *  ld*i08)))
+	gen   		  gpcnr6 =(((gru13hd3 + gru14hd5)/(p*mieperho *  ld*i01)) + (gru23hd3/(p*mieperho *  ld*i02)) + /*
+						*/ (gru33hd3/(p*mieperho *  ld*i03)) + (gru43hd3/(p*mieperho *  ld*i04)) + /*
+						*/ (gru53hd3/(p*mieperho *  ld*i05)) + (gru63hd3/(p*mieperho *  ld*i06)) + /*
+						*/ (gru73hd3/(p*mieperho *  ld*i07)) + (gru83hd3/(p*mieperho *  ld*i08))) 
 						
-	gen   		 gpcnr7 =((gru24hd/(12*mieperho *  ld*i02)) + (gru34hd/(12*mieperho *  ld*i03)) + /*
-						*/ (gru44hd/(12*mieperho *  ld*i04)) + (gru54hd/(12*mieperho *  ld*i05)) + /*
-						*/ (gru64hd/(12*mieperho *  ld*i06)) + (gru74hd/(12*mieperho *  ld*i07)) + /*
-						*/ (gru84hd/(12*mieperho *  ld*i08)))
+	gen   		 gpcnr7 =((gru24hd/(p*mieperho *  ld*i02)) + (gru34hd/(p*mieperho *  ld*i03)) + /*
+						*/ (gru44hd/(p*mieperho *  ld*i04)) + (gru54hd/(p*mieperho *  ld*i05)) + /*
+						*/ (gru64hd/(p*mieperho *  ld*i06)) + (gru74hd/(p*mieperho *  ld*i07)) + /*
+						*/ (gru84hd/(p*mieperho *  ld*i08))) 
 
 						
 	gen gpcnr0 = gpcnr1 + gpcnr2 + gpcnr3 + gpcnr4 + gpcnr5 + gpcnr6 + gpcnr7
@@ -317,125 +292,127 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	****************************************************/
 	* Comprado
 	gen        gpctg1= gpcnr1
-	gen        gpctg2= (gru11hd + gru14hd + sg23 + g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6  +sg25)/(12*mieperho*ld*i01)
-	gen        gpctg3= (gru21hd)/(12*mieperho*ld*i02)
-	gen        gpctg4= (gru31hd)/(12*mieperho*ld*i03)
-	gen        gpctg5= (gru41hd + sg421 + sg423)/(12*mieperho*ld*i04)
-	gen        gpctg6= (gru51hd)/(12*mieperho*ld*i05)
-	gen        gpctg7= (gru61hd + g07hd + sg422)/(12*mieperho*ld*i06)
-	gen        gpctg8= (gru71hd + sg42)/(12*mieperho*ld*i07)
-	gen        gpctg9= (gru81hd)/(12*mieperho*ld*i08)
+	gen        gpctg2= (gru11hd + gru14hd + sg23 + g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6  +sg25)/(p*mieperho*ld*i01) 
+	gen        gpctg3= (gru21hd)/(p*mieperho*ld*i02) 
+	gen        gpctg4= (gru31hd)/(p*mieperho*ld*i03) 
+	gen        gpctg5= (gru41hd + sg421 + sg423)/(p*mieperho*ld*i04) 
+	gen        gpctg6= (gru51hd)/(p*mieperho*ld*i05) 
+	gen        gpctg7= (gru61hd + g07hd + sg422)/(p*mieperho*ld*i06) 
+	gen        gpctg8= (gru71hd + sg42)/(p*mieperho*ld*i07) 
+	gen        gpctg9= (gru81hd)/(p*mieperho*ld*i08) 
 
 	recode gpctg2 gpctg3 gpctg4 gpctg5 gpctg5 gpctg6 gpctg7 gpctg7 gpctg8 gpctg9(.=0)
 
 
 	*Autoconsumo (ajustado alquiler de vivienda)
 	gen        gpctg10= gpcnr2
-	gen        gpctg11= (gru12hd1 + gru14hd1)/(12*mieperho*ld*i01)
-	gen        gpctg12= (gru22hd1)/(12*mieperho*ld*i02)
-	gen        gpctg13= (gru32hd1)/(12*mieperho*ld*i03)
-	gen        gpctg14= (gru42hd1)/(12*mieperho*ld*i04)
-	gen        gpctg15= (gru52hd1)/(12*mieperho*ld*i05)
-	gen        gpctg16= (gru62hd1)/(12*mieperho*ld*i06)
-	gen        gpctg17= (gru72hd1)/(12*mieperho*ld*i07)
-	gen        gpctg18= (gru82hd1)/(12*mieperho*ld*i08)
+	gen        gpctg11= (gru12hd1 + gru14hd1)/(p*mieperho*ld*i01) 
+	gen        gpctg12= (gru22hd1)/(p*mieperho*ld*i02) 
+	gen        gpctg13= (gru32hd1)/(p*mieperho*ld*i03) 
+	gen        gpctg14= (gru42hd1)/(p*mieperho*ld*i04) 
+	gen        gpctg15= (gru52hd1)/(p*mieperho*ld*i05) 
+	gen        gpctg16= (gru62hd1)/(p*mieperho*ld*i06) 
+	gen        gpctg17= (gru72hd1)/(p*mieperho*ld*i07) 
+	gen        gpctg18= (gru82hd1)/(p*mieperho*ld*i08) 
 
 	* Pago en especie
 	gen        gpctg19= gpcnr3
-	gen        gpctg20= (gru12hd2 + gru14hd2)/(12*mieperho*ld*i01)
-	gen        gpctg21= (gru22hd2)/(12*mieperho*ld*i02)
-	gen        gpctg22= (gru32hd2)/(12*mieperho*ld*i03)
-	gen        gpctg23= (gru42hd2)/(12*mieperho*ld*i04)
-	gen        gpctg24= (gru52hd2)/(12*mieperho*ld*i05)
-	gen        gpctg25= (gru62hd2)/(12*mieperho*ld*i06)
-	gen        gpctg26= (gru72hd2)/(12*mieperho*ld*i07)
-	gen        gpctg27= (gru82hd2)/(12*mieperho*ld*i08)
+	gen        gpctg20= (gru12hd2 + gru14hd2)/(p*mieperho*ld*i01) 
+	gen        gpctg21= (gru22hd2)/(p*mieperho*ld*i02) 
+	gen        gpctg22= (gru32hd2)/(p*mieperho*ld*i03) 
+	gen        gpctg23= (gru42hd2)/(p*mieperho*ld*i04) 
+	gen        gpctg24= (gru52hd2)/(p*mieperho*ld*i05) 
+	gen        gpctg25= (gru62hd2)/(p*mieperho*ld*i06) 
+	gen        gpctg26= (gru72hd2)/(p*mieperho*ld*i07) 
+	gen        gpctg27= (gru82hd2)/(p*mieperho*ld*i08) 
 
 	* Donacion Pública
 	gen        gpctg28= gpcnr4
-	gen        gpctg29= (gru13hd1 + gru14hd3+ sig24 +sig26)/(12*mieperho*ld*i01)
-	gen        gpctg30= (gru23hd1)/(12*mieperho*ld*i02)
-	gen        gpctg31= (gru33hd1)/(12*mieperho*ld*i03)
-	gen        gpctg32= (gru43hd1)/(12*mieperho*ld*i04)
-	gen        gpctg33= (gru53hd1)/(12*mieperho*ld*i05)
-	gen        gpctg34= (gru63hd1)/(12*mieperho*ld*i06)
-	gen        gpctg35= (gru73hd1)/(12*mieperho*ld*i07)
-	gen        gpctg36= (gru83hd1)/(12*mieperho*ld*i08)
+	gen        gpctg29= (gru13hd1 + gru14hd3+ sig24 +sig26)/(p*mieperho*ld*i01) 
+	gen        gpctg30= (gru23hd1)/(p*mieperho*ld*i02) 
+	gen        gpctg31= (gru33hd1)/(p*mieperho*ld*i03) 
+	gen        gpctg32= (gru43hd1)/(p*mieperho*ld*i04) 
+	gen        gpctg33= (gru53hd1)/(p*mieperho*ld*i05) 
+	gen        gpctg34= (gru63hd1)/(p*mieperho*ld*i06) 
+	gen        gpctg35= (gru73hd1)/(p*mieperho*ld*i07) 
+	gen        gpctg36= (gru83hd1)/(p*mieperho*ld*i08) 
 
 	* Donación privada
 	gen		gpctg37= gpcnr5
-	gen     gpctg38= (gru13hd2 + gru14hd4 + ig06hd)/(12*mieperho*ld*i01)
-	gen     gpctg39= (gru23hd2)/(12*mieperho*ld*i02)
-	gen     gpctg40= (gru33hd2)/(12*mieperho*ld*i03)
-	gen     gpctg41= (gru43hd2 + sg42d1 + sg42d3)/(12*mieperho*ld*i04)
-	gen     gpctg42= (gru53hd2)/(12*mieperho*ld*i05)
-	gen     gpctg43= (gru63hd2 + ig08hd + sg42d2)/(12*mieperho*ld*i06)
-	gen     gpctg44= (gru73hd2 + sg42d)/(12*mieperho*ld*i07)
-	gen     gpctg45= (gru83hd2)/(12*mieperho*ld*i08)
+	gen     gpctg38= (gru13hd2 + gru14hd4 + ig06hd)/(p*mieperho*ld*i01) 
+	gen     gpctg39= (gru23hd2)/(p*mieperho*ld*i02) 
+	gen     gpctg40= (gru33hd2)/(p*mieperho*ld*i03) 
+	gen     gpctg41= (gru43hd2 + sg42d1 + sg42d3)/(p*mieperho*ld*i04) 
+	gen     gpctg42= (gru53hd2)/(p*mieperho*ld*i05) 
+	gen     gpctg43= (gru63hd2 + ig08hd + sg42d2)/(p*mieperho*ld*i06) 
+	gen     gpctg44= (gru73hd2 + sg42d)/(p*mieperho*ld*i07) 
+	gen     gpctg45= (gru83hd2)/(p*mieperho*ld*i08) 
 
 	* Otro grupo
 	gen		gpctg46= gpcnr6
-	gen     gpctg47= (gru13hd3 + gru14hd5)/(12*mieperho*ld*i01)
-	gen     gpctg48= (gru23hd3)/(12*mieperho*ld*i02)
-	gen     gpctg49= (gru33hd3)/(12*mieperho*ld*i03)
-	gen     gpctg50= (gru43hd3)/(12*mieperho*ld*i04)
-	gen     gpctg51= (gru53hd3)/(12*mieperho*ld*i05)
-	gen     gpctg52= (gru63hd3)/(12*mieperho*ld*i06)
-	gen     gpctg53= (gru73hd3)/(12*mieperho*ld*i07)
-	gen     gpctg54= (gru83hd3)/(12*mieperho*ld*i08)
+	gen     gpctg47= (gru13hd3 + gru14hd5)/(p*mieperho*ld*i01) 
+	gen     gpctg48= (gru23hd3)/(p*mieperho*ld*i02) 
+	gen     gpctg49= (gru33hd3)/(p*mieperho*ld*i03) 
+	gen     gpctg50= (gru43hd3)/(p*mieperho*ld*i04) 
+	gen     gpctg51= (gru53hd3)/(p*mieperho*ld*i05) 
+	gen     gpctg52= (gru63hd3)/(p*mieperho*ld*i06) 
+	gen     gpctg53= (gru73hd3)/(p*mieperho*ld*i07) 
+	gen     gpctg54= (gru83hd3)/(p*mieperho*ld*i08) 
 
 
 	* Imputado ajustado alquiler vivienda (gru34hd)
-	gen     gpctg55= gpcnr7
-	gen     gpctg56= (gru24hd)/(12*mieperho*ld*i02)
+	gen         gpctg55= gpcnr7
+	gen         gpctg56= (gru24hd)/(p*mieperho*ld*i02) 
 
 	* Alquiler vivienda (gru34hd)
-	gen		gpctg57= (gru34hd)/(12*mieperho*ld*i03)
-	gen     gpctg58= (gru44hd)/(12*mieperho*ld*i04)
-	gen     gpctg59= (gru54hd)/(12*mieperho*ld*i05)
-	gen     gpctg60= (gru64hd)/(12*mieperho*ld*i06)
-	gen     gpctg61= (gru74hd)/(12*mieperho*ld*i07)
-	gen     gpctg62= (gru84hd)/(12*mieperho*ld*i08)
+	gen		gpctg57= (gru34hd)/(p*mieperho*ld*i03) 
+	gen     gpctg58= (gru44hd)/(p*mieperho*ld*i04) 
+	gen     gpctg59= (gru54hd)/(p*mieperho*ld*i05) 
+	gen     gpctg60= (gru64hd)/(p*mieperho*ld*i06) 
+	gen     gpctg61= (gru74hd)/(p*mieperho*ld*i07) 
+	gen     gpctg62= (gru84hd)/(p*mieperho*ld*i08) 
 	gen     gpctg0 = gpctg1 + gpctg10 + gpctg19 + gpctg28 + gpctg37 + gpctg46 + gpctg55
 
 
 
 	************* Ingresos ****************************************************************.
 
-	gen ipcr_2 = (ingbruhd +ingindhd)/(12*mieperho*ld*i00)
-	gen ipcr_3 = (insedthd + ingseihd)/(12*mieperho*ld*i00)
-	gen ipcr_4 = (pagesphd + paesechd + ingauthd + isecauhd)/(12*mieperho*ld*i00)
-	gen ipcr_5 = (ingexthd)/(12*mieperho*ld*i00)
+	gen ipcr_2 = (ingbruhd +ingindhd)/(p*mieperho*ld*i00) 
+	gen ipcr_3 = (insedthd + ingseihd + insedthd1)/(p*mieperho*ld*i00) 
+	gen ipcr_4 = (pagesphd + paesechd + ingauthd + isecauhd + paesechd1)/(p*mieperho*ld*i00) 
+	gen ipcr_5 = (ingexthd)/(p*mieperho*ld*i00) 
 	gen ipcr_1 = (ipcr_2 + ipcr_3 + ipcr_4 + ipcr_5)
 
-	gen ipcr_7 = (ingtrahd)/(12*mieperho*ld*i00)
-	gen ipcr_8 = (ingtexhd)/(12*mieperho*ld*i00)
+	gen ipcr_7 = (ingtrahd)/(p*mieperho*ld*i00) 
+	gen ipcr_8 = (ingtexhd)/(p*mieperho*ld*i00) 
 	gen ipcr_6 = (ipcr_7 + ipcr_8)
 
-	gen ipcr_9  = (ingtprhd)/(12*mieperho*ld*i00)
-	gen ipcr_10 = (ingtpuhd)/(12*mieperho*ld*i00)
-	gen ipcr_11 = (ingtpu01)/(12*mieperho*ld*i00)
-	gen ipcr_12 = (ingtpu03)/(12*mieperho*ld*i00)
-	gen ipcr_13 = (ingtpu05)/(12*mieperho*ld*i00)
-	gen ipcr_14 = (ingtpu04)/(12*mieperho*ld*i00)
-	gen ipcr_15 = (ingtpu02)/(12*mieperho*ld*i00)
-	gen ipcr_16 = (ingrenhd)/(12*mieperho*ld*i00)
+	gen ipcr_9  = (ingtprhd)/(p*mieperho*ld*i00) 
+	gen ipcr_10 = (ingtpuhd)/(p*mieperho*ld*i00) 
+	gen ipcr_11 = (ingtpu01)/(p*mieperho*ld*i00) 
+	gen ipcr_12 = (ingtpu03)/(p*mieperho*ld*i00) 
+	gen ipcr_13 = (ingtpu05)/(p*mieperho*ld*i00) 
+	gen ipcr_14 = (ingtpu04)/(p*mieperho*ld*i00) 
+	gen ipcr_15 = (ingtpu02 + ingtpu06 + ingtpu07 + ingtpu08 + ingtpu09 + ingtpu10 + ingtpu11 + ingtpu12 + ingtpu13 + ingtpu14 + ingtpu15 + ingtpu16)/(p*mieperho*ld*i00)
+	gen ipcr_16 = (ingrenhd)/(p*mieperho*ld*i00) 
 	gen ipcr_17 = (ingoexhd + gru13hd3 + gru23hd3 + gru33hd3 + gru43hd3 + gru53hd3 + gru63hd3 + gru73hd3 + /*
-	*/  gru83hd3 + gru24hd +gru44hd + gru54hd + gru74hd + gru84hd + gru14hd5)/(12*mieperho*ld*i00)
+	*/  gru83hd3 + gru24hd +gru44hd + gru54hd + gru74hd + gru84hd + gru14hd5)/(p*mieperho*ld*i00) /*
+	*/
 
 	*ajuste por el alquiler imputado
-	gen ipcr_18 =(ia01hd +gru34hd - ga04hd + gru64hd)/(12*mieperho*ld*i00)
+	gen ipcr_18 =(ia01hd +gru34hd - ga04hd + gru64hd)/(p*mieperho*ld*i00) 
 
 	gen ipcr_19 = (gru13hd1 + sig24 + gru23hd1 + gru33hd1 + gru43hd1 + gru53hd1 + gru63hd1 + gru73hd1 + gru83hd1 /* 
-	*/+ gru14hd3 + sig26)/(12*mieperho*ld*i00)
+	*/+ gru14hd3 + sig26)/(p*mieperho*ld*i00) 
 
 	gen ipcr_20 = (gru13hd2 + ig06hd + gru23hd2 + gru33hd2 + gru43hd2 + gru53hd2 + gru63hd2 + ig08hd + gru73hd2 + /*
-	*/ gru83hd2 + gru14hd4 + sg42d + sg42d1 + sg42d2 + sg42d3)/(12*mieperho*ld*i00)
+	*/ gru83hd2 + gru14hd4 + sg42d + sg42d1 + sg42d2 + sg42d3)/(p*mieperho*ld*i00)/*
+	*/ 
 
 	gen  ipcr_0= ipcr_2 + ipcr_3 + ipcr_4 + ipcr_5+ ipcr_7 + ipcr_8 + ipcr_16 + ipcr_17 + ipcr_18 + ipcr_19 + ipcr_20
 
-	label var ipcr_0 "Ingreso percapita mensual a precios de Lima monetario"
-	
+	label var ipcr_0 "Ingreso percapita mensual a precios de Lima monetario "
+
 	label var ipcr_1 "Ingreso percapita mensual a precios de Lima monetario por trabajo"
 	label var ipcr_2 "Ingreso percapita mensual a precios de Lima monetario por trabajo principal"
 	label var ipcr_3 "Ingreso percapita mensual a precios de Lima monetario por trabajo secundario"
@@ -456,48 +433,20 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	label var ipcr_18 "Ingreso percapita mensual a precios de Lima alquiler imputado"
 	label var ipcr_19 "Ingreso percapita mensual a precios de Lima donacion publica"
 	label var ipcr_20 "Ingreso percapita mensual a precios de Lima donacion privada"
-	
+
 	*** Salidas ***
 
-	svyset [pweight = factornd07], psu(conglome)strata(estrato)
-
 	*** Gasto real promedio percapita mensual***
-
-	svy:mean gpgru0, over(aniorec)
-	svy:mean gpgru0 if aniorec==2018, over(area)
-	svy:mean gpgru0 if aniorec==2018, over(domin02)
-	svy:mean gpgru0 if aniorec==2018, over(dpto)
+	table area aniorec [iw=factornd07], stat(mean gpgru0) 
+	table domin02 aniorec [iw=factornd07], stat(mean gpgru0) 
+	table dpto aniorec [iw=factornd07], stat(mean gpgru0) 
 
 
 	*** Ingreso real promedio percapita mensual ***
+	table area aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0fc)
+	table domin02 aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
+	table dpto aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 
-	svy:mean ipcr_0, over(aniorec)
-	svy:mean ipcr_0 if aniorec==2018, over(area)
-	svy:mean ipcr_0 if aniorec==2018, over(domin02)
-	svy:mean ipcr_0 if aniorec==2018, over(dpto)
-
-	*Generando deciles y quintiles de gasto
-	gen quintil_g=.
-	gen quintil_i=.
-	foreach x of numlist 2007/2019{
-	xtile quintil_g`x'=gpgru0 if año==`x' [pweight = factornd07], nq(5)
-	replace quintil_g=quintil_g`x' if año==`x' 
-	xtile quintil_i`x'=ipcr_0 if año==`x' [pweight = factornd07], nq(5)
-	replace quintil_i=quintil_i`x' if año==`x' 
-
-	}
-	
-	gen decil_g=.
-	gen decil_i=.
-	foreach x of numlist 2007/2019{
-	xtile decil_g`x'=gpgru0 if año==`x' [pweight = factornd07], nq(10)
-	replace decil_g=decil_g`x' if año==`x' 
-	xtile decil_i`x'=ipcr_0 if año==`x' [pweight = factornd07], nq(10)
-	replace decil_i=decil_i`x' if año==`x' 
-}
-
-	table decil_g aniorec [pweight = factornd07], c(mean gpgru0 ) format(%5.0fc)	/*Revisar si sale igual al Informe anual de Pobreza del INEI*/
-	}
 	
 	save "$temp\sumaria.dta", replace
 }
