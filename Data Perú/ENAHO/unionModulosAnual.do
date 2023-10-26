@@ -91,7 +91,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 }	
 	*Módulo 500
 {
-    global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p511* p512* p513t i513t i518 i520 p517* p518 p520 p523 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t mes"
+    global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p511* p512* p513t i513t i518 i520 p517* p518 p520 p523 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t mes p558*"
 	use "$bd\enaho01a-2007-500.dta", clear
 	keep $var_5
 	gen año=2007
@@ -103,6 +103,46 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo500.dta", replace
+}	
+	*Módulo 700
+{
+    global var_7 "conglome vivienda hogar estrato dominio ubigeo mes p7* "
+	use "$bd\enaho01-2012-700.dta", clear
+	keep $var_7
+	gen año=2012
+	forvalues i= 2013/2022{
+    append using "$bd\enaho01-`i'-700.dta", keep($var_7) 
+	replace año=`i' if año==.
+    }
+	destring conglome, replace
+	tostring conglome, replace format(%06.0f)
+	
+	save "$temp\modulo700.dta", replace
+
+	
+	use "$bd\enaho01-2012-700a.dta", clear
+	keep $var_7
+	gen año=2012
+	forvalues i= 2013/2022{
+    append using "$bd\enaho01-`i'-700a.dta", keep($var_7) 
+	replace año=`i' if año==.
+    }
+	destring conglome, replace
+	tostring conglome, replace format(%06.0f)
+	save "$temp\modulo700a.dta", replace
+
+
+
+	use "$bd\enaho01-2012-700b.dta", clear
+	keep $var_7
+	gen año=2012
+	forvalues i= 2013/2022{
+    append using "$bd\enaho01-`i'-700b.dta", keep($var_7) 
+	replace año=`i' if año==.
+    }
+	destring conglome, replace
+	tostring conglome, replace format(%06.0f)
+	save "$temp\modulo700b.dta", replace
 }	
 	*Sumaria
 {														/*Solo es para minimizar el codigo de sumarias*/

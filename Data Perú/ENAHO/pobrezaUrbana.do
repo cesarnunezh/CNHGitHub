@@ -48,10 +48,16 @@ Estructura:
 	
 	gen agua_dentro=cond(p110==1 ,1,cond(p110==.,.,0))
 
-	gen acc_agua_24 = 1 if agua == 1 & p110c1 == 24
-	replace acc_agua_24 = 0 if acc_agua_24==.
-	replace acc_agua_24 = . if p110==.
-
+	* Porcentaje de horas semanales con acceso a agua
+	gen horas_agua = p110c1 if agua == 1 & p110c == 1
+	replace horas_agua = p110c2*p110c3/7 if agua == 1 & p110c == 2
+	replace horas_agua = . if p110==. | agua ==. | p110c1 ==.
+	replace horas_agua = horas_agua /24
+	
+	gen agua_segura = 1 if p110a == 1
+	replace agua_segura = 0 if p110a != 1
+	replace agua_segura = . if p110a == .
+	
 	preserve
 	use "$temp\modulo300.dta", clear
 	keep if p203 == 1
@@ -110,6 +116,9 @@ Estructura:
 	gen vulnerable = (pobrezav == 3)
 	replace vulnerable = . if pobrezav <3 | pobrezav ==.
 	
+	gen pobre = (pobrezav < 3)
+	replace vulnerable = . if pobrezav ==.
+
 	gen pct_perceptores = percepho/mieperho
 	
 	gen paredes = (p102 == 1)
@@ -121,10 +130,74 @@ Estructura:
 	gen techo = (p103a == 1)
 	replace techo =. if p103a ==.
 }
+**********************************************************************************************
+*	2. Base a nivel de personas
+{
+	use "$temp\modulo200.dta", clear
+	merge m:1 año conglome vivienda hogar using "$temp\modulo100.dta", keepusing(nbi* fac*)
+	drop if _m==2
+	drop _m
+	
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza area fac*)
+	drop if _m==2
+	drop _m
 
-probit vulnerable altitud agua_dentro acc_agua_24 internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes piso techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if area==1 & año>=2010 & año <2013
+	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobreza fac*)
+	drop if _m==2
+	drop _m
 
-logit vulnerable altitud agua_dentro acc_agua_24 internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if area==1 & año>=2020
+	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo300.dta", keepusing(p300a fac*)
+	drop if _m==2
+	drop _m
+	
+	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo500.dta", keepusing(p558* fac* ocu*)
+	drop if _m==2
+	drop _m
+	
+	*Generamos la variable filtro de resientes del hogar
+	gen filtro=0
+	replace filtro=1 if ((p204==1 & p205==2) | (p204==2 & p206==1)) 
 
-margins , dyex(altitud)
-margins , dydx(agua_dentro acc_agua_24 internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo)
+	recode p208a (0/5=1) (6/11=2) (12/17=3) (nonmissing=4), gen(grupo_edad)
+	label define grupo_edad 1 "0-5 años" 2 "6-11 años" 3 "12-17 años" 4 "18 a más"
+	label val grupo_edad grupo_edad
+
+	*Pobreza
+	gen pobre_extremo=cond(pobreza==1,1,cond(pobreza==.,.,0))
+	gen pobre=cond(pobreza==1 | pobreza==2,1,cond(pobreza==.,.,0))
+	
+	
+	replace estrato = 1 if dominio ==8 
+	gen area2 = estrato <7
+	replace area2=2 if area==0
+	label define area2 2 rural 1 urbana
+	label val area2 area2
+	
+	recode p300a (1=1) (2=2) (3=3) (4 =4) (nonmissing =.), gen(lenguamat)
+	label define lenguamat 1 "Quechua" 2 "Aymara" 3 "Lenguas Amazónicas" 4 "Castellano"
+	label val lenguamat lenguamat
+	
+	gen ocupada = cond(ocu500==1,1,0)
+	gen pea= cond(ocu500<3 & ocu500!=0,1,cond(ocu500==.,.,0))
+	gen desempleo = pea - ocupada
+	
+	svyset [pweight = factor07], psu(conglome)strata(estrato)
+	
+	table area pobrezav año if filtro==1 & año >= 2011 [iw=facpob07], nototals	
+	
+	table area pobrezav año if filtro==1 & año >=2012 [iw = fac500a], stat(mean ocupada) nototals
+	table area pobrezav año if filtro==1 & año >=2012 [iw = fac500a], stat(mean desempleo) nototals
+	nototals
+}
+**********************************************************************************************
+*	3. Estimaciones
+{	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if estrato==1 & año>=2010 
+
+	margins , dyex(altitud horas_agua)
+	margins , dydx(agua_dentro  internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo)
+
+	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if estrato==1 & año>2020
+
+	margins , dyex(altitud horas_agua)
+	margins , dydx(agua_dentro  internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo)
+}

@@ -33,7 +33,11 @@ Estructura:
 	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo300.dta", keepusing(p300a fac*)
 	drop if _m==2
 	drop _m
-
+	
+	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo500.dta", keepusing(p558* fac*)
+	drop if _m==2
+	drop _m
+	
 	*Generamos la variable filtro de resientes del hogar
 	gen filtro=0
 	replace filtro=1 if ((p204==1 & p205==2) | (p204==2 & p206==1)) 
