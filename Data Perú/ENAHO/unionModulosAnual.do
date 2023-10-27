@@ -483,6 +483,34 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	label var ipcr_19 "Ingreso percapita mensual a precios de Lima donacion publica"
 	label var ipcr_20 "Ingreso percapita mensual a precios de Lima donacion privada"
 
+	*** Ingreso real promedio percapita mensual ***
+
+	svy:mean ipcr_0, over(aniorec)
+	svy:mean ipcr_0 if aniorec==2018, over(area)
+	svy:mean ipcr_0 if aniorec==2018, over(domin02)
+	svy:mean ipcr_0 if aniorec==2018, over(dpto)
+
+	*Generando deciles y quintiles de gasto
+	gen quintil_g=.
+	gen quintil_i=.
+	foreach x of numlist 2007/2019{
+	xtile quintil_g`x'=gpgru0 if año==`x' [pweight = factornd07], nq(5)
+	replace quintil_g=quintil_g`x' if año==`x' 
+	xtile quintil_i`x'=ipcr_0 if año==`x' [pweight = factornd07], nq(5)
+	replace quintil_i=quintil_i`x' if año==`x' 
+
+	}
+
+	gen decil_g=.
+	gen decil_i=.
+	foreach x of numlist 2007/2019{
+	xtile decil_g`x'=gpgru0 if año==`x' [pweight = factornd07], nq(10)
+	replace decil_g=decil_g`x' if año==`x' 
+	xtile decil_i`x'=ipcr_0 if año==`x' [pweight = factornd07], nq(10)
+	replace decil_i=decil_i`x' if año==`x' 
+}
+
+	
 	*** Salidas ***
 
 	*** Gasto real promedio percapita mensual***
@@ -496,8 +524,8 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	table domin02 aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 	table dpto aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 
-	drop pobrezav
-	merge 1:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav)
+	drop pobrezav lineav
+	merge 1:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav lineav) 
 	drop if _m==2
 	drop _merge
 	

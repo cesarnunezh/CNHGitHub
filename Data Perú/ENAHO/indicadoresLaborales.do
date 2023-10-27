@@ -25,7 +25,7 @@ Estructura:
 	drop if _m==2
 	drop _merge
 	
-	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing( pobrezav)
+	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav)
 	drop if _m==2
 	drop _merge
 	

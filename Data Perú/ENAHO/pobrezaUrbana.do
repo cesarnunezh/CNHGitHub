@@ -21,11 +21,7 @@ Estructura:
 {
 	use "$temp\modulo100.dta", clear
 
-	merge 1:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing( pobrezav)
-	keep if _m==3
-	drop _merge
-
-	merge 1:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(ipc* gpc* gpg* percepho mieperho)
+	merge 1:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(ipc* gpc* gpg* percepho mieperho pobre* quintil* decil*)
 	keep if _m==3
 	drop _merge
 
