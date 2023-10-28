@@ -21,20 +21,16 @@ Estructura:
 {
 	use "$temp\modulo500.dta", clear
 
-	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* pobreza)
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* pobreza mieperho percepho ld*)
 	drop if _m==2
 	drop _merge
 	
-	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav)
+	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav linea*)
 	drop if _m==2
 	drop _merge
 	
 	merge m:1 año conglome vivienda hogar using "$temp\modulo100.dta", keepusing(lat* long*)
 	drop if _m==2
-
-	* Se genera la variable de población ocupada
-	gen ocupada = cond(ocu500==1,1,0)
-	gen pea= cond(ocu500<3 & ocu500!=0,1,cond(ocu500==.,.,0))
 
 	destring ubigeo, replace
 	gen dpto=int(ubigeo/10000)
@@ -57,7 +53,11 @@ Estructura:
 	gen pobre = (pobrezav <= 2)
 	gen vulnerable = (pobrezav == 3)
 	
+	* Se genera la variable de población ocupada, empleo informal
 	gen informal = (ocupinf==1)
+	gen ocupada = cond(ocu500==1,1,0)
+	gen pea= cond(ocu500<3 & ocu500!=0,1,cond(ocu500==.,.,0))
+	gen desempleo = pea - ocupada
 	
 	recode p208a (14/24 =1) (25/44 =3) (45/64 =4) (nonmissing=5), gen(grupo_edad)
 	label define grupo_edad 1 "14-24 años" 3 "25-44 años" 4 "45-64 años" 5 "65 años a más"
@@ -85,6 +85,23 @@ Estructura:
 	gen ingtram=ingtrabw/(12)
 	label var ingtrabw "Ingreso por trabajo anual"
 	label var ingtram "Ingreso por trabajo mensual"
+	
+	gen horas = i513t + i518 if i518!=.
+	replace horas = i513t if i518==.
+	replace horas = i520 if p519 ==2
+	
+	gen sub_horas = (ocu500==1 & horas<35 & p521 == 1 & p521a ==1)
+	replace sub_horas = . if ocupada!=1
+	
+	table año if filtro == 1 [iw=fac500a], nototals stat(sum ocupada desempleo sub_horas )
+	
+	gen imr = (linea * mieperho) / percepho
+	replace imr = (linea * mieperho) if percepho==0
+	gen sub_ingresos = (ocu500==1 & ingtram <= imr)
+	replace sub_ingresos = 0 if sub_horas==1 
+	replace sub_ingresos = . if ocu500!=1 
+	
+	table año if filtro == 1 [iw=fac500a], nototals stat(sum ocupada desempleo sub_horas sub_ingresos)
 	
 	* Creando variable de SM Nominal
 	gen sm=. 
@@ -430,15 +447,7 @@ Estructura:
 	restore
 }	
 
-*	4. Ingreso proveniente del trabajo
-{
-	**Finalmente, calculamos el ingreso promedio mensual proveniente del trabajo según región
-	***En el cálculo se incluye las siguientes retricciones: (i) residente, (ii) persona ocupada y
-	***(iii) ingresos positivos y menores de S/. 25 mil para evitar el sesgo de valores extremos
-	table año area if filtro==1 & ocu500==1 & (ingtram>0 & ingtram<=25000) [iw=fac500a], stat(mean ingtram) 
-}
-
-*	5. Empleo y pobreza urbana
+*	4. Empleo y pobreza urbana
 {	
 
 	** Porcentaje de la población urbana sin contrato según nivel de pobreza y vulnerabilidad

@@ -134,11 +134,11 @@ Estructura:
 	drop if _m==2
 	drop _m
 	
-	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(pobreza area fac*)
+	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* decil* area fac*)
 	drop if _m==2
 	drop _m
 
-	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobreza fac*)
+	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobre* fac*)
 	drop if _m==2
 	drop _m
 
@@ -183,7 +183,7 @@ Estructura:
 	
 	table area pobrezav año if filtro==1 & año >=2012 [iw = fac500a], stat(mean ocupada) nototals
 	table area pobrezav año if filtro==1 & año >=2012 [iw = fac500a], stat(mean desempleo) nototals
-	nototals
+	
 }
 **********************************************************************************************
 *	3. Estimaciones
