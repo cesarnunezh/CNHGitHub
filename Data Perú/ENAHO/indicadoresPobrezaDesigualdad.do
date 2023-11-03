@@ -373,8 +373,9 @@ Estructura:
 *	5. Coeficiente de gini
 {
 	use "$temp\sumaria.dta", clear
-
-	forval			i=2007/2019 {
+	* Solo gini urbano
+	keep if area==2
+	forval			i=2007/2022 {
 	capture 		noisily ginidesc ipcr_0 [aw=factornd07] if año==`i'
 	nobreak
 	}
@@ -383,7 +384,7 @@ Estructura:
 	ginidesc ipcr_0 [aw=factornd07], by(año) m(ing1) gk(ing2)
 	ginidesc gpgru0 [aw=factornd07], by(año) m(gas1) gk(gas2)
 
-	putexcel set "$out1/datos.xls", sheet("Coef. gini") modify
+	putexcel set "$output/datos.xls", sheet("Coef. gini Rural") modify
 	putexcel A1=matrix(gas2), names
 	putexcel A20=matrix(ing2), names
 	}
