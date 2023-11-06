@@ -31,7 +31,10 @@ Estructura:
 	destring ubigeo, replace
 	gen dpto=int(ubigeo/10000)
 	replace dpto=26 if dpto==15 & dominio!=8
-	label values dpto dpto
+	label define dpto 1"Amazonas" 2"Ancash" 3"Apurimac" 4"Arequipa" 5"Ayacucho" 6"Cajamarca" 7 "Callao" 8"Cusco" 9"Huancavelica" 10"Huanuco" 11"Ica" /*
+	*/12"Junin" 13"La_Libertad" 14"Lambayeque" 15"Lima" 16"Loreto" 17"Madre_de_Dios" 18"Moquegua" 19"Pasco" 20"Piura" 21"Puno" 22"San_Martin" /*
+	*/23"Tacna" 24"Tumbes" 25"Ucayali" 26 "Lima Provincias"
+	lab val dpto dpto 
 	
 	rename (p1141 p1142 p1143 p1144 p1145) (fijo celu tv internet ninguno)
 	
@@ -187,7 +190,8 @@ Estructura:
 }
 **********************************************************************************************
 *	3. Estimaciones
-{	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if estrato==1 & año>=2010 
+{	
+	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if dpto==1 & año>=2010 
 
 	margins , dyex(altitud horas_agua)
 	margins , dydx(agua_dentro  internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo)

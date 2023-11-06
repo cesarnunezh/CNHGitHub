@@ -87,11 +87,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 }	
 	*Módulo 500 - Empleo e Ingresos
 {
-<<<<<<< Updated upstream
-    global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p511* p512* p513t i513t p519 i520 p517* i* p518 p520 p521* p523 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t mes p558*"
-=======
 *    global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p511* p512* p513t i513t i518 i520 p517* p518 p520 p523 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t mes"
->>>>>>> Stashed changes
 	use "$bd\enaho01a-2007-500.dta", clear
 *	keep $var_5
 	gen año=2007
@@ -104,7 +100,19 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo500.dta", replace
 }	
-	*Módulo 700
+	*Módulo 612 - Equipamiento del hogar
+{
+	use "$bd\enaho01-2007-612.dta", clear
+	gen año=2007
+	forvalues i= 2008/2022{
+    append using "$bd\enaho01-`i'-612.dta", force
+	replace año=`i' if año==.
+    }
+	destring conglome, replace
+	tostring conglome, replace format(%06.0f)
+	save "$temp\modulo612.dta", replace
+}	
+	*Módulo 700 - Programas Sociales
 {
     global var_7 "conglome vivienda hogar estrato dominio ubigeo mes p7* "
 	use "$bd\enaho01-2012-700.dta", clear
@@ -161,10 +169,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	gen aniorec=año
 	gen dpto= real(substr(ubigeo,1,2))
 	replace dpto=15 if (dpto==7)
-	label define dpto 1"Amazonas" 2"Ancash" 3"Apurimac" 4"Arequipa" 5"Ayacucho" 6"Cajamarca" 8"Cusco" 9"Huancavelica" 10"Huanuco" 11"Ica" /*
-	*/12"Junin" 13"La_Libertad" 14"Lambayeque" 15"Lima" 16"Loreto" 17"Madre_de_Dios" 18"Moquegua" 19"Pasco" 20"Piura" 21"Puno" 22"San_Martin" /*
-	*/23"Tacna" 24"Tumbes" 25"Ucayali" 
-	lab val dpto dpto 
+
 
 	sort aniorec dpto
 	merge aniorec dpto using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2022\Bases\deflactores_base2022_new.dta"
@@ -535,15 +540,3 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	
 	save "$temp\sumaria.dta", replace
 }
-	*Módulo 612 - Equipamiento del hogar
-{
-	use "$bd\enaho01-2007-612.dta", clear
-	gen año=2007
-	forvalues i= 2008/2022{
-    append using "$bd\enaho01-`i'-612.dta", force
-	replace año=`i' if año==.
-    }
-	destring conglome, replace
-	tostring conglome, replace format(%06.0f)
-	save "$temp\modulo612.dta", replace
-}	
