@@ -24,7 +24,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	*Módulo 100 - Características de la vivienda y el hogar
 {   
 *	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p10* p104* p1121 p103 p110* p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o alt* latitud longitud"
-	use "$bd\enaho01-2010-100.dta", clear
+	use "$bd\enaho01-2007-100.dta", clear
 *	keep $var_1
 	gen año=2007
 	forvalues i= 2008/2022{
@@ -115,10 +115,10 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	*Módulo 700 - Programas Sociales
 {
     global var_7 "conglome vivienda hogar estrato dominio ubigeo mes p7* "
-	use "$bd\enaho01-2012-700.dta", clear
+	use "$bd\enaho01-2007-700.dta", clear
 	keep $var_7
-	gen año=2012
-	forvalues i= 2013/2022{
+	gen año=2007
+	forvalues i= 2008/2022{
     append using "$bd\enaho01-`i'-700.dta", keep($var_7) 
 	replace año=`i' if año==.
     }
