@@ -21,7 +21,7 @@ Estructura:
 {
 	use "$temp\modulo100.dta", clear
 
-	merge 1:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(ipc* gpc* gpg* percepho mieperho pobre* quintil* decil*)
+	merge 1:1 anio conglome vivienda hogar using "$temp\sumaria.dta", keepusing(ipc* gpc* gpg* percepho mieperho pobre* quintil* decil*)
 	keep if _m==3
 	drop _merge
 
@@ -65,12 +65,12 @@ Estructura:
 	gen sex_jefe = p207
 	gen edad_jefe = p208a 
 	gen estado_civil_jefe = p209
-	keep año conglome vivienda hogar educ_jefe leng_jefe sex_jefe edad_jefe estado_civil_jefe
+	keep anio conglome vivienda hogar educ_jefe leng_jefe sex_jefe edad_jefe estado_civil_jefe
 	tempfile educ_jefe
 	save `educ_jefe'
 	restore
 	
-	merge 1:1 año conglome vivienda hogar using "`educ_jefe'", keepusing(educ_jefe leng_jefe sex_jefe edad_jefe estado_civil_jefe)
+	merge 1:1 anio conglome vivienda hogar using "`educ_jefe'", keepusing(educ_jefe leng_jefe sex_jefe edad_jefe estado_civil_jefe)
 	sort conglome vivienda hogar 
 	keep if _m==3
 	drop _merge
@@ -92,12 +92,12 @@ Estructura:
 	recode r5 (1/9.9 = 1) (10/47.99 = 2)  (nonmissing = 3)  , gen(sector_jefe)
 	label define sector_jefe 1 "Sector primario" 2 "Sector secundario" 3 "Sector terciario"
 	label values sector_jefe sector_jefe
-	keep año conglome vivienda hogar inf_jefe sector_jefe
+	keep anio conglome vivienda hogar inf_jefe sector_jefe
 	tempfile inf_jefe
 	save `inf_jefe'
 	restore
 	
-	merge 1:1 año conglome vivienda hogar using "`inf_jefe'", keepusing(inf_jefe sector_jefe)
+	merge 1:1 anio conglome vivienda hogar using "`inf_jefe'", keepusing(inf_jefe sector_jefe)
 	sort conglome vivienda hogar 
 	keep if _m==3
 	drop _merge
@@ -133,23 +133,23 @@ Estructura:
 *	2. Base a nivel de personas
 {
 	use "$temp\modulo200.dta", clear
-	merge m:1 año conglome vivienda hogar using "$temp\modulo100.dta", keepusing(nbi* fac*)
+	merge m:1 anio conglome vivienda hogar using "$temp\modulo100.dta", keepusing(nbi* fac*)
 	drop if _m==2
 	drop _m
 	
-	merge m:1 año conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* decil* area fac*)
+	merge m:1 anio conglome vivienda hogar using "$temp\sumaria.dta", keepusing(quintil* decil* area fac*)
 	drop if _m==2
 	drop _m
 
-	merge m:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobre* fac*)
+	merge m:1 anio conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobre* fac*)
 	drop if _m==2
 	drop _m
 
-	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo300.dta", keepusing(p300a fac*)
+	merge 1:1 anio conglome vivienda hogar codperso using "$temp\modulo300.dta", keepusing(p300a fac*)
 	drop if _m==2
 	drop _m
 	
-	merge 1:1 año conglome vivienda hogar codperso using "$temp\modulo500.dta", keepusing(p558* fac* ocu*)
+	merge 1:1 anio conglome vivienda hogar codperso using "$temp\modulo500.dta", keepusing(p558* fac* ocu*)
 	drop if _m==2
 	drop _m
 	
@@ -158,7 +158,7 @@ Estructura:
 	replace filtro=1 if ((p204==1 & p205==2) | (p204==2 & p206==1)) 
 
 	recode p208a (0/5=1) (6/11=2) (12/17=3) (nonmissing=4), gen(grupo_edad)
-	label define grupo_edad 1 "0-5 años" 2 "6-11 años" 3 "12-17 años" 4 "18 a más"
+	label define grupo_edad 1 "0-5 anios" 2 "6-11 anios" 3 "12-17 anios" 4 "18 a más"
 	label val grupo_edad grupo_edad
 
 	*Pobreza
@@ -182,21 +182,21 @@ Estructura:
 	
 	svyset [pweight = factor07], psu(conglome)strata(estrato)
 	
-	table area pobrezav año if filtro==1 & año >= 2011 [iw=facpob07], nototals	
+	table area pobrezav anio if filtro==1 & anio >= 2011 [iw=facpob07], nototals	
 	
-	table area pobrezav año if filtro==1 & año >=2012 [iw = fac500a], stat(mean ocupada) nototals
-	table area pobrezav año if filtro==1 & año >=2012 [iw = fac500a], stat(mean desempleo) nototals
+	table area pobrezav anio if filtro==1 & anio >=2012 [iw = fac500a], stat(mean ocupada) nototals
+	table area pobrezav anio if filtro==1 & anio >=2012 [iw = fac500a], stat(mean desempleo) nototals
 	
 }
 **********************************************************************************************
 *	3. Estimaciones
 {	
-	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if dpto==1 & año>=2010 
+	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if dpto==1 & anio>=2010 
 
 	margins , dyex(altitud horas_agua)
 	margins , dydx(agua_dentro  internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo)
 
-	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if estrato==1 & año>2020
+	quietly: logit pobre altitud agua_dentro horas_agua internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo i.reg_natural i.lenguamat i.educ_jefe i.sector_jefe  if estrato==1 & anio>2020
 
 	margins , dyex(altitud horas_agua)
 	margins , dydx(agua_dentro  internet pct_perceptores desague sex_jefe inf_jefe nbi2 paredes pisotierra techo)

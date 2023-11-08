@@ -5,7 +5,7 @@ Autores:  CN
 
 Estructura:
 	0. Direcciones
-    1. Compilado de años para las bases de datos
+    1. Compilado de anios para las bases de datos
 		
 *******************************************************************************/
 
@@ -20,16 +20,16 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	global output "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\3. Output"
 
 **********************************************************************************************
-* 1. Compilado de años para las bases de datos
-	*Módulo 100 - Características de la vivienda y el hogar
+* 1. Compilado de anios para las bases de datos
+	*Módulo 1 - Características de la vivienda y el hogar
 {   
 *	global var_1 "conglome vivienda hogar ubigeo estrato dominio nbi* p10* p104* p1121 p103 p110* p111* p113* p1141 p1142 p1143 p1144 p1145 dominio fac* a?o alt* latitud longitud"
 	use "$bd\enaho01-2007-100.dta", clear
 *	keep $var_1
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01-`i'-100.dta", force
-    replace año=`i' if año==.
+    replace anio=`i' if anio==.
 	}
 	
 	
@@ -37,128 +37,128 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	
-	replace altitud = altura if año ==2019
+	replace altitud = altura if anio ==2019
 	drop altura
 
 	save "$temp\modulo100.dta", replace
 }
-	*Módulo 200 - Características de los miembros del hogar
+	*Módulo 2 - Características de los miembros del hogar
 {	
 *    global var_2 "conglome vivienda hogar codperso estrato dominio ubigeo p20* facpob07"
 	use "$bd\enaho01-2007-200.dta", clear
 *	keep $var_2
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01-`i'-200.dta", force
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 
 	save "$temp\modulo200.dta", replace
 }
-	*Módulo 300 - Educación
+	*Módulo 3 - Educación
 {	
 *    global var_3 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301* p303 p306 p307 p310 p300a fac*"
 	use "$bd\enaho01a-2007-300.dta", clear
 *	keep $var_3
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01a-`i'-300.dta", force
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo300.dta", replace
 }	
-	*Módulo 400 - Salud
+	*Módulo 4 - Salud
 {	
 *    global var_4 "conglome vivienda hogar codperso estrato dominio ubigeo p401  p4021 p4022 p4023 p4024 p4025 p4031-p40314 p4091-p40911 p4151_* p4152_* p4153_* p4154_* p417_02 p417_08 p417_11 p417_12 p417_13 p417_14 p419* i416* p419* p2* fac*"
 	use "$bd\enaho01a-2007-400.dta", clear
 *	keep $var_4
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01a-`i'-400.dta", force 
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo400.dta", replace
 }	
-	*Módulo 500 - Empleo e Ingresos
+	*Módulo 5 - Empleo e Ingresos
 {
 *    global var_5 "conglome vivienda hogar codperso estrato dominio ubigeo p20* p301a p505* p506* p507 p511* p512* p513t i513t i518 i520 p517* p518 p520 p523 fac500a ocu500 ocupinf i524a1 d529t i530a d536 i538a1 d540t i541a d543 d544t mes"
 	use "$bd\enaho01a-2007-500.dta", clear
 *	keep $var_5
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01a-`i'-500.dta", force
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
-	replace fac500a=fac500a7 if año==2011
+	replace fac500a=fac500a7 if anio==2011
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	save "$temp\modulo500.dta", replace
 }	
-	*Módulo 612 - Equipamiento del hogar
+	*Módulo 18 - Equipamiento del hogar
 {
 	use "$bd\enaho01-2007-612.dta", clear
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01-`i'-612.dta", force
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
-	save "$temp\modulo612.dta", replace
+	save "$temp\modulo18.dta", replace
 }	
-	*Módulo 700 - Programas Sociales
+	*Módulo 37 - Programas Sociales
 {
     global var_7 "conglome vivienda hogar estrato dominio ubigeo mes p7* "
 	use "$bd\enaho01-2007-700.dta", clear
 	keep $var_7
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\enaho01-`i'-700.dta", keep($var_7) 
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
 	
-	save "$temp\modulo700.dta", replace
+	save "$temp\modulo37.dta", replace
 
 	
 	use "$bd\enaho01-2012-700a.dta", clear
 	keep $var_7
-	gen año=2012
+	gen anio=2012
 	forvalues i= 2013/2022{
     append using "$bd\enaho01-`i'-700a.dta", keep($var_7) 
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
-	save "$temp\modulo700a.dta", replace
+	save "$temp\modulo37a.dta", replace
 
 
 
 	use "$bd\enaho01-2012-700b.dta", clear
 	keep $var_7
-	gen año=2012
+	gen anio=2012
 	forvalues i= 2013/2022{
     append using "$bd\enaho01-`i'-700b.dta", keep($var_7) 
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 	destring conglome, replace
 	tostring conglome, replace format(%06.0f)
-	save "$temp\modulo700b.dta", replace
+	save "$temp\modulo37b.dta", replace
 }	
 	*Sumaria
 {														
 	use "$bd\sumaria-2007.dta", clear
-	gen año=2007
+	gen anio=2007
 	forvalues i= 2008/2022{
     append using "$bd\sumaria-`i'.dta"
-	replace año=`i' if año==.
+	replace anio=`i' if anio==.
     }
 
 	destring conglome, replace
@@ -166,7 +166,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 	recode g01hd ig0* insedthd1 paesechd1 ing* *gru* gas* tipocuesti* tipoentre* estrsocial lin* pobrezav ld pobreza (.=0)
 
-	gen aniorec=año
+	gen aniorec=anio
 	gen dpto= real(substr(ubigeo,1,2))
 	replace dpto=15 if (dpto==7)
 
@@ -499,27 +499,27 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	gen quintil_g=.
 	gen quintil_i=.
 	foreach x of numlist 2007/2019{
-	xtile quintil_g`x'=gpgru0 if año==`x' [pweight = factornd07], nq(5)
-	replace quintil_g=quintil_g`x' if año==`x' 
-	xtile quintil_i`x'=ipcr_0 if año==`x' [pweight = factornd07], nq(5)
-	replace quintil_i=quintil_i`x' if año==`x' 
+	xtile quintil_g`x'=gpgru0 if anio==`x' [pweight = factornd07], nq(5)
+	replace quintil_g=quintil_g`x' if anio==`x' 
+	xtile quintil_i`x'=ipcr_0 if anio==`x' [pweight = factornd07], nq(5)
+	replace quintil_i=quintil_i`x' if anio==`x' 
 
 	}
 
 	gen decil_g=.
 	gen decil_i=.
 	foreach x of numlist 2007/2019{
-	xtile decil_g`x'=gpgru0 if año==`x' [pweight = factornd07], nq(10)
-	replace decil_g=decil_g`x' if año==`x' 
-	xtile decil_i`x'=ipcr_0 if año==`x' [pweight = factornd07], nq(10)
-	replace decil_i=decil_i`x' if año==`x' 
+	xtile decil_g`x'=gpgru0 if anio==`x' [pweight = factornd07], nq(10)
+	replace decil_g=decil_g`x' if anio==`x' 
+	xtile decil_i`x'=ipcr_0 if anio==`x' [pweight = factornd07], nq(10)
+	replace decil_i=decil_i`x' if anio==`x' 
 }
 
 	
 	*** Salidas ***
 
 	*** Gasto real promedio percapita mensual***
-	table area año [iw=factornd07], stat(mean gpgru0) 
+	table area anio [iw=factornd07], stat(mean gpgru0) 
 	table domin02 aniorec [iw=factornd07], stat(mean gpgru0) 
 	table dpto aniorec [iw=factornd07], stat(mean gpgru0) 
 
@@ -530,13 +530,13 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	table dpto aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 
 	drop pobrezav lineav
-	merge 1:1 año conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav lineav) 
+	merge 1:1 anio conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav lineav) 
 	drop if _m==2
 	drop _merge
 	
 	*** Gasto e ingreso real promedio percapita mensual urbano según vulnerabilidad***
-	table pobrezav año if area ==1  [iw=factornd07], stat(mean gpgru0) nformat(%6.0fc)
-	table pobrezav año if area ==1  [iw=factornd07], stat(mean ipcr_0) nformat(%6.0fc)
+	table pobrezav anio if area ==1  [iw=factornd07], stat(mean gpgru0) nformat(%6.0fc)
+	table pobrezav anio if area ==1  [iw=factornd07], stat(mean ipcr_0) nformat(%6.0fc)
 	
 	save "$temp\sumaria.dta", replace
 }
