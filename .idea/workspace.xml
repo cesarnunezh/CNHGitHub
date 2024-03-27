@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="469b5927-0bd0-4a8a-a041-bb206c4f00eb" name="Changes" comment="" />
+    <list default="true" id="469b5927-0bd0-4a8a-a041-bb206c4f00eb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Personal/DataRunning.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bib2dataframe.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/bib2dataframe.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bibScienceDirect.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/bibScienceDirect.ipynb" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,6 +51,7 @@
   <component name="RunManager">
     <configuration name="Fuchibol peruano" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="2. Scrypts" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -70,6 +76,13 @@
         <item itemvalue="Python.Fuchibol peruano" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-5de4e687c57e-c6172f9078bd-com.jetbrains.pycharm.ds.sharedIndexes.bundled-DS-233.13135.105" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
