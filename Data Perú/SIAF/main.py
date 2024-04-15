@@ -6,8 +6,11 @@ import time
 # Define la URL de la API
 url = "https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1/datastore_search"
 
-progList = ['138', '142', '146', '147', '148', '150', '1002', '1001']
-#'24', '30', '31', '36', '49', '51', '58', '66', '68', '73', '79', '82', '87', '90', '93', '96', '97', '101', '103', '106', '109', '113', '115', '116', '117', '122', '124', '125', '127', '129',
+progList = ['24', '30', '31', '36', '49', '51', '58', '66', '68', '73', '79', '82',
+            '87', '90', '93', '96', '97', '101', '103', '106', '109', '113', '115',
+            '116', '117', '122', '124', '125', '127', '129','138', '142', '146',
+            '147', '148', '150', '1001', '1002']
+
 dfFinal = pd.DataFrame()
 
 for prog in progList:
@@ -16,7 +19,8 @@ for prog in progList:
         params = {
             "resource_id": "c28a4a61-8813-414c-ab72-44fd888292d4",
             "filters": json.dumps({
-                "PROGRAMA_PPTO": prog
+                "PROGRAMA_PPTO": prog,
+                "TIPO_ACT_PROY" : "ACTIVIDAD"
             })
         }
 
@@ -31,7 +35,7 @@ for prog in progList:
             df = pd.DataFrame.from_records(records)
             df = df.loc[:, ['PROGRAMA_PPTO', 'PROGRAMA_PPTO_NOMBRE', 'PRODUCTO_PROYECTO_NOMBRE','PRODUCTO_PROYECTO','ACTIVIDAD_ACCION_OBRA_NOMBRE','ACTIVIDAD_ACCION_OBRA', 'META_NOMBRE', 'FINALIDAD', 'TIPO_ACT_PROY']]
             df = df.drop_duplicates()
-            df = df[(df['PRODUCTO_PROYECTO_NOMBRE']!='ACCIONES COMUNES') & (df['TIPO_ACT_PROY']=='ACTIVIDAD')]
+            df = df[(df['PRODUCTO_PROYECTO_NOMBRE']!='ACCIONES COMUNES')]
             dfFinal = pd.concat([dfFinal,df])
             print("Sabes")
 
@@ -41,3 +45,6 @@ for prog in progList:
     except:
         print(f'No funciona el {prog}')
         continue
+
+
+df = dfFinal[dfFinal['PROGRAMA_PPTO']=='1001']
