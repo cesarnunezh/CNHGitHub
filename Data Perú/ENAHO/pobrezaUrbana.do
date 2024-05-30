@@ -36,6 +36,10 @@ Estructura:
 	*/23"Tacna" 24"Tumbes" 25"Ucayali" 26 "Lima Provincias"
 	lab val dpto dpto 
 	
+	gen limaycallao = (dpto == 15 | dpto ==7)
+	label define limaycallao 1 "Lima y Callao" 0 "Resto urbano"
+	lab val limaycallao limaycallao
+	
 	rename (p1141 p1142 p1143 p1144 p1145) (fijo celu tv internet ninguno)
 	
 	*Generando variables de acceso
@@ -115,8 +119,8 @@ Estructura:
 	gen vulnerable = (pobrezav == 3)
 	replace vulnerable = . if pobrezav <3 | pobrezav ==.
 	
-	gen pobre = (pobrezav < 3)
-	replace vulnerable = . if pobrezav ==.
+	gen pobre = (pobreza < 3)
+	replace pobre = . if pobreza ==.
 
 	gen pct_perceptores = percepho/mieperho
 	
@@ -128,7 +132,14 @@ Estructura:
 	
 	gen techo = (p103a == 1)
 	replace techo =. if p103a ==.
-}
+
+	table anio limaycallao if area ==1 [pw = facpob07], stat(mean pobre)
+	
+	gen sec_completa = (educ_jefe>=3)
+	table anio pobre if area ==1 [pw = facpob07], stat(mean sec_completa)
+
+
+	}
 **********************************************************************************************
 *	2. Base a nivel de personas
 {

@@ -27,7 +27,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01-2007-100.dta", clear
 *	keep $var_1
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01-`i'-100.dta", force
     replace anio=`i' if anio==.
 	}
@@ -48,7 +48,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01-2007-200.dta", clear
 *	keep $var_2
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01-`i'-200.dta", force
 	replace anio=`i' if anio==.
     }
@@ -63,7 +63,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01a-2007-300.dta", clear
 *	keep $var_3
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01a-`i'-300.dta", force
 	replace anio=`i' if anio==.
     }
@@ -77,7 +77,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01a-2007-400.dta", clear
 *	keep $var_4
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01a-`i'-400.dta", force 
 	replace anio=`i' if anio==.
     }
@@ -91,7 +91,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01a-2007-500.dta", clear
 *	keep $var_5
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01a-`i'-500.dta", force
 	replace anio=`i' if anio==.
     }
@@ -104,7 +104,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 {
 	use "$bd\enaho01-2007-612.dta", clear
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01-`i'-612.dta", force
 	replace anio=`i' if anio==.
     }
@@ -118,7 +118,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01-2007-700.dta", clear
 	keep $var_7
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\enaho01-`i'-700.dta", keep($var_7) 
 	replace anio=`i' if anio==.
     }
@@ -131,7 +131,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01-2012-700a.dta", clear
 	keep $var_7
 	gen anio=2012
-	forvalues i= 2013/2022{
+	forvalues i= 2013/2023{
     append using "$bd\enaho01-`i'-700a.dta", keep($var_7) 
 	replace anio=`i' if anio==.
     }
@@ -144,7 +144,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	use "$bd\enaho01-2012-700b.dta", clear
 	keep $var_7
 	gen anio=2012
-	forvalues i= 2013/2022{
+	forvalues i= 2013/2023{
     append using "$bd\enaho01-`i'-700b.dta", keep($var_7) 
 	replace anio=`i' if anio==.
     }
@@ -156,7 +156,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 {														
 	use "$bd\sumaria-2007.dta", clear
 	gen anio=2007
-	forvalues i= 2008/2022{
+	forvalues i= 2008/2023{
     append using "$bd\sumaria-`i'.dta"
 	replace anio=`i' if anio==.
     }
@@ -172,7 +172,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 
 	sort aniorec dpto
-	merge aniorec dpto using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2022\Bases\deflactores_base2022_new.dta"
+	merge aniorec dpto using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2023\Bases\deflactores_base2023_new.dta"
 	tab _m
 	drop if _merge==2
 	drop _m
@@ -225,7 +225,7 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 
 	sort  dominioA
 
-	merge dominioA using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2022\Bases\despacial_ldnew.dta"
+	merge dominioA using "C:\Users\User\OneDrive - Universidad del Pacífico\1. Documentos\0. Bases de datos\02. ENAHO\0. Documentación\Gasto2023\Bases\despacial_ldnew.dta"
 	tab _m
 	drop _m
 
@@ -529,7 +529,6 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	table domin02 aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 	table dpto aniorec [iw=factornd07], stat(mean ipcr_0) nformat(%6.0g)
 
-	drop pobrezav lineav
 	merge 1:1 anio conglome vivienda hogar using "$bd\base_variables_pobreza_vulnerabilidad-2007-2022.dta", keepusing(pobrezav lineav) 
 	drop if _m==2
 	drop _merge
@@ -539,4 +538,9 @@ global temp "D:\1. Documentos\0. Bases de datos\2. ENAHO\2. Temp"
 	table pobrezav anio if area ==1  [iw=factornd07], stat(mean ipcr_0) nformat(%6.0fc)
 	
 	save "$temp\sumaria.dta", replace
+}
+
+	*Módulo 8 - Participación ciudadana
+{
+	
 }

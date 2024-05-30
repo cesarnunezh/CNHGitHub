@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="469b5927-0bd0-4a8a-a041-bb206c4f00eb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Personal/DataRunning.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bib2dataframe.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/bib2dataframe.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bibScienceDirect.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/bibScienceDirect.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data Perú/Conflictos sociales/webScrappingNews.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Data Perú/Conflictos sociales/webScrappingNews.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data Perú/ENAHO/unionModulosAnual.do" beforeDir="false" afterPath="$PROJECT_DIR$/Data Perú/ENAHO/unionModulosAnual.do" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data Perú/ENAHO/~pobrezaUrbana.do.stswp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data Perú/Mapas Perú.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Data Perú/Mapas Perú.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,17 +37,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/1. Documentos/0. Bases de datos/0. Dofiles y Scripts/CNH-GitHub/2. Scrypts&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/User/OneDrive - MIGRACIÓN VIDENZA/1. Proyectos/1. Proyectos actuales/23. Artículos PDB/2. PDB - Pobreza Urbana/2. Data",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Fuchibol peruano" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="2. Scrypts" />
