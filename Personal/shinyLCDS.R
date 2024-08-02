@@ -1,12 +1,19 @@
 library(tidyverse)
 library(openxlsx)
+library(shiny)
+library(shinyWidgets)
+library(shinythemes)
+library(shinycssloaders)
+library(bslib)
+library(bsicons)
 
-# Importación y limpieza de base de datos ----
+
+#1. Importación y limpieza de base de datos ----
 
 dir <- 'C:/Users/User/OneDrive - Universidad del Pacífico/2. La Casa de Sammy/1. Finanzas/2. Ventas'
 setwd(dir)
 
-df <- read.xlsx('ReporteVentas_2024-01-01_2024-07-05.xlsx', startRow = 9) 
+df <- read.xlsx('ReporteVentas.xlsx', startRow = 9) 
 
 names(df) <- c("idVenta", "nDocumento", "fecha", "nombreCliente" , "dirCliente", "idCliente", "emailCliente",
                "moneda", "tipoCambio", "igv", "montoTotal", "descTotal", "estado", "vendedor" , "observaciones",
@@ -148,39 +155,25 @@ df <- df %>%
 
 rm(df2)
 
-# Tablas y gráficos ----
+#2.  Tablas y gráficos ----
 df <- df %>%
   mutate(fecha = dmy_hm(fecha),
          anio = year(fecha),
          mes = month(fecha),
-         dia = day(fecha))
+         dia = day(fecha)) %>% 
+  mutate(lineaNegocio = case_when(catItem == "Pet Spa" | catItem =="Delivery" ~ "Pet spa",
+                                  TRUE ~ "Pet shop")) 
 
-# Tabla diaria que divide las ventas mensuales por linea de negocio
-tabla1 <- df %>% 
-  mutate(lineaNegocio = case_when(catItem == "Pet Spa" ~ "Pet spa",
-                                  TRUE ~ "Pet shop")) %>% 
+
+tabla1 <- df %>%
   group_by(lineaNegocio, anio, mes,dia) %>% 
   summarise(montoDiario=sum(as.numeric(totalItem)))
 
-# Tabla mensual que divide las ventas mensuales por linea de negocio
+# Tabla mensual que divide las ventas por linea de negocio
 tabla2 <- tabla1 %>% 
   group_by(lineaNegocio,anio,mes) %>% 
   summarise(montoMensual=sum(as.numeric(montoDiario))) 
 
-
-# Tabla mensual de ventas hasta el día de hoy
-tabla1 %>% 
-  filter(dia <= day(now())) %>% 
-  group_by(lineaNegocio,anio,mes) %>% 
-  summarise(montoMensual=sum(as.numeric(montoDiario))) %>% 
-  ggplot() +
-  aes(x = mes, y = montoMensual, color = lineaNegocio) +
-  stat_summary(aes(y=montoMensual), fun ="mean", geom="point") +
-  stat_summary(aes(y=montoMensual), fun ="mean", geom="line") +
-  labs(x = "Mes",
-       y = "Monto (en soles)") +
-  labs(title = "Evolución de ventas mensuales a la fecha", 
-       color = "Línea de negocio")
 
 # Tabla de ventas anuales por producto 
 tabla3 <- df %>% 
@@ -199,27 +192,491 @@ tabla4 <- df %>%
 
 # Gráfico de ticket promedio 
 
-df2 <- df %>% 
-  mutate(spa = case_when(catItem == "Pet Spa" ~ 1,
-                         TRUE ~ 0),
-         shop = case_when(catItem != "Pet Spa" & catItem != "Delivery" ~ 1,
-                          TRUE ~ 0),
-         delivery = case_when(catItem == "Delivery" ~ 1,
-                              TRUE ~ 0)) %>% 
-  group_by(idVenta, anio, mes, nombreCliente, idCliente) %>% 
-  summarise(montoVenta = mean(montoTotal),
-            spa = sum(spa),
-            shop = sum(shop),
-            delivery = sum(delivery)) %>% 
-  ungroup() %>% 
-  mutate(tipoVenta = case_when(spa > 0 & shop > 0 ~ "Mixta",
-                               spa > 0 & shop == 0 ~ "Solo spa",
-                               spa == 0 & shop > 0 ~ "Solo shop"))
-
-tabla5 <- df2 %>% 
-  group_by(tipoVenta, anio, mes) %>% 
-  summarise(ticketPromedio = mean(montoVenta),
-            numero = n())
-
 
 ## PENDIENTE HACER ANÁLISIS POR CLIENTES, ANÁLISIS DE NUEVOS CLIENTES, ANÁLISIS DE ADICIONALES DE BAÑO, ETC
+# Tabla de número de nuevos clientes por mes
+
+lista <- c("Pet spa","Pet shop", "Total")
+
+lista_anios <- c(2024, 2023)
+
+lista_mes <-df %>%  
+  select(mes) %>% 
+  distinct() %>%  
+  arrange(mes)  %>%  
+  drop_na()
+
+# 3. UI: USER INTERFACE -----
+# UI (User Interface): La UI es la interfaz de usuario y es la primera parte que los usuarios ven 
+# cuando utilizan la aplicaci??n. 
+# La UI se define utilizando la funci??n ui.R y contiene los componentes gr??ficos, 
+# como men??s, botones, gr??ficos y tablas.
+
+
+ui <- fluidPage(
+  navbarPage("Dashboard de La Casa de Sammy", theme = shinytheme("lumen"),
+             tabPanel("Ingresos", fluid = TRUE, icon = icon("dog"),
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput(inputId = "Year",
+                                      label = "Año",
+                                      choices = lista_anios,
+                                      selected = year(now()),
+                                      width = "220px"),
+                          selectInput(inputId = "Mes",
+                                      label = "Mes",
+                                      choices = lista_mes,
+                                      selected = month(now()),
+                                      width = "220px"),
+                          selectInput(inputId = "lineaNegocio",
+                                      label = "Línea de Negocio",
+                                      choices = lista,
+                                      selected = "Total",
+                                      width = "220px")
+                        ),
+                        mainPanel(
+                          layout_columns(
+                            value_box(
+                              textOutput("dato1"),
+                              title = "Total ventas",
+                              showcase = bs_icon("coin", size = 100),
+                              showcase_layout = "left center",
+                              theme_color = "info"),
+                            value_box(
+                              textOutput("dato2"),
+                              title = "Número de clientes",
+                              showcase = bs_icon("people", size = 100),
+                              showcase_layout = "left center",
+                              theme_color = "info"),
+                            value_box(
+                              textOutput("dato3"),
+                              title = "Nuevos clientes",
+                              showcase = bs_icon("bar-chart-fill", size = 100),
+                              showcase_layout = "left center",
+                              theme_color = "info")
+                          ),
+                          hr(),
+                          layout_columns(
+                            value_box(
+                              textOutput("dato4"),
+                              title = "Ticket promedio",
+                              showcase = bs_icon("ticket", size = 100),
+                              showcase_layout = "left center",
+                              theme_color = "info"),
+                            value_box(
+                              textOutput("dato5"),
+                              title = "Ticket promedio Mixto",
+                              showcase = bs_icon("ticket", size = 100),
+                              showcase_layout = "left center",
+                              theme_color = "info"),
+                            value_box(
+                              textOutput("dato6"),
+                              title = "Ticket máximo",
+                              showcase = bs_icon("wallet", size = 100),
+                              showcase_layout = "left center",
+                              theme_color = "info")
+                          ),
+                          hr(),
+                          layout_columns(
+                            card(
+                              full_screen = TRUE,
+                              max_height = 350,
+                              card_header("Evolución mensual"),
+                              plotOutput("graph1")
+                            ),
+                            card(
+                              full_screen = TRUE,
+                              max_height = 350,
+                              card_header("Evolución diaria"),
+                              plotOutput("graph2")
+                            )
+                          )),
+                        )
+                      )
+             ))
+
+
+# 4. SERVIDOR ----- 
+# El servidor maneja la l??gica de la aplicaci??n, 
+# procesa los datos y crea la salida que se muestra en la UI. 
+
+server <- function(input, output) {
+  
+  output$graph1 <- renderPlot({
+    
+    # Tabla diaria que divide las ventas por linea de negocio
+    df %>%
+      group_by(lineaNegocio, anio, mes,dia) %>% 
+      summarise(montoDiario=sum(as.numeric(totalItem))) %>% 
+      filter(dia <= day(now())) %>% 
+      group_by(lineaNegocio,anio,mes) %>% 
+      summarise(montoMensual=sum(as.numeric(montoDiario))) %>% 
+      ggplot() +
+      aes(x = mes, y = montoMensual, color = lineaNegocio) +
+      stat_summary(aes(y=montoMensual), fun ="mean", geom="point") +
+      stat_summary(aes(y=montoMensual), fun ="mean", geom="line") +
+      labs(x = "Mes",
+           y = "Monto (en soles)") +
+      labs(title = "Evolución de ventas mensuales a la fecha", 
+           color = "Línea de negocio")
+    
+  }) 
+  
+  output$graph2 <- renderPlot({
+    
+    if (input$lineaNegocio == "Total"){
+      tabla1 <- df %>%
+        group_by(anio, mes,dia) %>% 
+        summarise(montoDiario=sum(as.numeric(totalItem)))
+      
+      tablaAlterna <- tabla1 %>% 
+        filter(mes == input$Mes) %>% 
+        group_by(anio, mes) %>% 
+        mutate(montoAcum = cumsum(montoDiario)) %>% 
+        ungroup() %>% 
+        mutate(categoria = "Mes actual")
+      
+      alterna <- tabla1 %>% 
+        group_by(anio, mes) %>% 
+        arrange(anio,mes,dia) %>%
+        mutate(acumulado_ventas = cumsum(montoDiario)) %>% 
+        ungroup() %>% 
+        group_by(anio, dia) %>% 
+        summarise(montoAcum = mean(acumulado_ventas)) %>%
+        mutate(categoria = "Promedio")
+      
+      alterna2 <- tabla1 %>% 
+        group_by(anio, mes) %>% 
+        arrange(anio,mes,dia) %>%
+        mutate(acumulado_ventas = cumsum(montoDiario)) %>% 
+        ungroup() %>% 
+        group_by(anio, dia) %>% 
+        summarise(montoAcum = max(acumulado_ventas)) %>%
+        mutate(categoria = "Máximo")
+      
+      tablaAlterna <- tablaAlterna %>% 
+        select(anio,dia,montoAcum, categoria) %>% 
+        rbind(alterna %>% select(anio,dia,montoAcum, categoria), alterna2) 
+      
+      tablaAlterna %>%
+        ggplot() +
+        aes(x = dia, y = montoAcum, color = categoria) +
+        stat_summary(aes(y=montoAcum), fun ="mean", geom="point") +
+        stat_summary(aes(y=montoAcum), fun ="mean", geom="line") +
+        labs(x = "Mes",
+             y = "Monto (en soles)") +
+        labs(title = "Evolución de ventas mensuales a la fecha", 
+             color = "Línea de negocio")
+    }
+    else {
+      tabla1 <- df %>%
+        group_by(lineaNegocio, anio, mes,dia) %>% 
+        summarise(montoDiario=sum(as.numeric(totalItem)))
+      
+      tablaAlterna <- tabla1 %>% 
+        filter(mes == input$Mes) %>% 
+        group_by(lineaNegocio, anio, mes) %>% 
+        mutate(montoAcum = cumsum(montoDiario)) %>% 
+        ungroup() %>% 
+        mutate(categoria = "Mes actual")
+      
+      alterna <- tabla1 %>% 
+        group_by(lineaNegocio, anio, mes) %>% 
+        arrange(anio,mes,dia) %>%
+        mutate(acumulado_ventas = cumsum(montoDiario)) %>% 
+        ungroup() %>% 
+        group_by(lineaNegocio, anio, dia) %>% 
+        summarise(montoAcum = mean(acumulado_ventas)) %>%
+        mutate(categoria = "Promedio")
+      
+      alterna2 <- tabla1 %>% 
+        group_by(lineaNegocio, anio, mes) %>% 
+        arrange(anio,mes,dia) %>%
+        mutate(acumulado_ventas = cumsum(montoDiario)) %>% 
+        ungroup() %>% 
+        group_by(lineaNegocio, anio, dia) %>% 
+        summarise(montoAcum = max(acumulado_ventas)) %>%
+        mutate(categoria = "Máximo")
+      
+      tablaAlterna <- tablaAlterna %>% 
+        select(lineaNegocio,anio,dia,montoAcum, categoria) %>% 
+        rbind(alterna, alterna2)
+      
+      tablaAlterna %>%
+        filter(lineaNegocio == input$lineaNegocio) %>% 
+        ggplot() +
+        aes(x = dia, y = montoAcum, color = categoria) +
+        stat_summary(aes(y=montoAcum), fun ="mean", geom="point") +
+        stat_summary(aes(y=montoAcum), fun ="mean", geom="line") +
+        labs(x = "Mes",
+             y = "Monto (en soles)") +
+        labs(title = "Evolución de ventas mensuales a la fecha", 
+             color = "Línea de negocio")
+    }
+    
+    
+  }) 
+  
+  output$dato1 <- renderPrint({
+    
+    if (input$lineaNegocio == "Total"){
+      valor <- df %>% 
+        filter(anio == input$Year & mes == input$Mes ) %>% 
+        select(totalItem) %>% 
+        sum() %>% 
+        round(digits = 2)
+      
+      formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+      cat(formatted_value)
+    }
+    else{
+      valor <- df %>% 
+        filter(anio == input$Year & mes == input$Mes & lineaNegocio == input$lineaNegocio) %>% 
+        select(totalItem) %>% 
+        sum() %>% 
+        round(digits = 2)
+      
+      formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+      cat(formatted_value) 
+    }
+
+  })
+    
+  output$dato2 <- renderPrint({
+
+    if (input$lineaNegocio == "Total"){
+      
+      tabla6 <- df %>% 
+        filter(!is.na(idCliente)) %>% 
+        arrange(idVenta) %>% 
+        group_by(idCliente) %>% 
+        mutate(clienteNuevo = if_else(row_number() == 1, 1, 0)) %>% 
+        ungroup() %>% 
+        group_by(mes, idCliente) %>% 
+        mutate(nClientes = if_else(row_number() == 1, 1, 0)) %>% 
+        group_by(anio, mes) %>% 
+        summarise(nuevosClientes = sum(clienteNuevo),
+                  totalClientes = sum(nClientes))
+      
+      valor <- tabla6 %>% 
+        ungroup %>% 
+        filter(anio == input$Year & mes == input$Mes) %>% 
+        summarise(total = sum(totalClientes)) %>% 
+        select(total) %>% 
+        sum() %>% 
+        round(digits = 0)
+      cat(valor)
+    }
+    else{
+      tabla6 <- df %>% 
+        filter(!is.na(idCliente)) %>% 
+        arrange(idVenta) %>% 
+        group_by(idCliente, lineaNegocio) %>% 
+        mutate(clienteNuevo = if_else(row_number() == 1, 1, 0)) %>% 
+        ungroup() %>% 
+        group_by(mes, idCliente, lineaNegocio) %>% 
+        mutate(nClientes = if_else(row_number() == 1, 1, 0)) %>% 
+        group_by(anio, mes, lineaNegocio) %>% 
+        summarise(nuevosClientes = sum(clienteNuevo),
+                  totalClientes = sum(nClientes))
+      
+      valor <- tabla6 %>% 
+        ungroup %>% 
+        filter(anio == input$Year & mes == input$Mes & lineaNegocio == input$lineaNegocio) %>% 
+        select(totalClientes) %>% 
+        sum() %>% 
+        round(digits = 0)
+    
+      cat(valor)
+    }
+    
+  })
+  
+  output$dato3 <- renderPrint({
+    
+    if (input$lineaNegocio == "Total"){
+      tabla6 <- df %>% 
+        filter(!is.na(idCliente)) %>% 
+        arrange(idVenta) %>% 
+        group_by(idCliente) %>% 
+        mutate(clienteNuevo = if_else(row_number() == 1, 1, 0)) %>% 
+        ungroup() %>% 
+        group_by(mes, idCliente) %>% 
+        mutate(nClientes = if_else(row_number() == 1, 1, 0)) %>% 
+        group_by(anio, mes) %>% 
+        summarise(nuevosClientes = sum(clienteNuevo),
+                  totalClientes = sum(nClientes))
+      
+      valor <- tabla6 %>% 
+        ungroup %>% 
+        filter(anio == input$Year & mes == input$Mes) %>% 
+        summarise(total = sum(nuevosClientes)) %>% 
+        select(total) %>% 
+        sum() %>% 
+        round(digits = 0)
+      cat(valor)
+    }
+    else {
+      tabla6 <- df %>% 
+        filter(!is.na(idCliente)) %>% 
+        arrange(idVenta) %>% 
+        group_by(idCliente, lineaNegocio) %>% 
+        mutate(clienteNuevo = if_else(row_number() == 1, 1, 0)) %>% 
+        ungroup() %>% 
+        group_by(mes, idCliente, lineaNegocio) %>% 
+        mutate(nClientes = if_else(row_number() == 1, 1, 0)) %>% 
+        group_by(anio, mes, lineaNegocio) %>% 
+        summarise(nuevosClientes = sum(clienteNuevo),
+                  totalClientes = sum(nClientes))
+      
+      valor <- tabla6 %>% 
+      ungroup %>% 
+      filter(anio == input$Year & mes == input$Mes & lineaNegocio == input$lineaNegocio) %>% 
+      select(nuevosClientes) %>% 
+      sum() %>% 
+      round(digits = 0)
+    cat(valor)
+    }
+    
+  })
+  
+  output$dato4 <- renderPrint({
+    
+    df2 <- df %>% 
+      mutate(spa = case_when(catItem == "Pet Spa" ~ 1,
+                             TRUE ~ 0),
+             shop = case_when(catItem != "Pet Spa" & catItem != "Delivery" ~ 1,
+                              TRUE ~ 0),
+             delivery = case_when(catItem == "Delivery" ~ 1,
+                                  TRUE ~ 0)) %>% 
+      group_by(idVenta, anio, mes, nombreCliente, idCliente) %>% 
+      summarise(montoVenta = mean(montoTotal),
+                spa = sum(spa),
+                shop = sum(shop),
+                delivery = sum(delivery)) %>% 
+      ungroup() %>% 
+      mutate(tipoVenta = case_when(spa > 0 & shop > 0 ~ "Mixta",
+                                   spa > 0 & shop == 0 ~ "Pet spa",
+                                   spa == 0 & shop > 0 ~ "Pet shop"))
+    
+    if (input$lineaNegocio == "Total"){
+      tabla5 <- df2 %>% 
+        group_by(anio, mes) %>% 
+        summarise(ticketPromedio = mean(montoVenta),
+                  numero = n()) 
+      
+      dfvalor <- tabla5 %>% 
+        filter(anio == input$Year & mes == input$Mes )
+      
+      valor <- dfvalor$ticketPromedio %>% 
+        round(digits = 2)
+      
+      formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+      cat(formatted_value)
+    }
+    else {
+      tabla5 <- df2 %>% 
+        group_by(tipoVenta, anio, mes) %>% 
+        summarise(ticketPromedio = mean(montoVenta),
+                  numero = n()) 
+    
+      dfvalor <- tabla5 %>% 
+        filter(anio == input$Year & mes == input$Mes & tipoVenta == input$lineaNegocio)
+      
+      valor <- dfvalor$ticketPromedio %>% 
+        round(digits = 2)
+      
+      formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+      cat(formatted_value)
+    }
+  })
+  
+  output$dato5 <- renderPrint({
+    
+    df2 <- df %>% 
+      mutate(spa = case_when(catItem == "Pet Spa" ~ 1,
+                             TRUE ~ 0),
+             shop = case_when(catItem != "Pet Spa" & catItem != "Delivery" ~ 1,
+                              TRUE ~ 0),
+             delivery = case_when(catItem == "Delivery" ~ 1,
+                                  TRUE ~ 0)) %>% 
+      group_by(idVenta, anio, mes, nombreCliente, idCliente) %>% 
+      summarise(montoVenta = mean(montoTotal),
+                spa = sum(spa),
+                shop = sum(shop),
+                delivery = sum(delivery)) %>% 
+      ungroup() %>% 
+      mutate(tipoVenta = case_when(spa > 0 & shop > 0 ~ "Mixta",
+                                   spa > 0 & shop == 0 ~ "Pet spa",
+                                   spa == 0 & shop > 0 ~ "Pet shop"))
+    
+    tabla5 <- df2 %>% 
+      group_by(tipoVenta, anio, mes) %>% 
+      summarise(ticketPromedio = mean(montoVenta),
+                numero = n()) 
+    
+    dfvalor <- tabla5 %>% 
+      filter(anio == input$Year & mes == input$Mes & tipoVenta == "Mixta")
+    
+    valor <- dfvalor$ticketPromedio %>% 
+      round(digits = 2)
+    
+    formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+    cat(formatted_value)
+    
+  })
+  
+  output$dato6 <- renderPrint({
+   
+    df2 <- df %>% 
+      mutate(spa = case_when(catItem == "Pet Spa" ~ 1,
+                             TRUE ~ 0),
+             shop = case_when(catItem != "Pet Spa" & catItem != "Delivery" ~ 1,
+                              TRUE ~ 0),
+             delivery = case_when(catItem == "Delivery" ~ 1,
+                                  TRUE ~ 0)) %>% 
+      group_by(idVenta, anio, mes, nombreCliente, idCliente) %>% 
+      summarise(montoVenta = mean(montoTotal),
+                spa = sum(spa),
+                shop = sum(shop),
+                delivery = sum(delivery)) %>% 
+      ungroup() %>% 
+      mutate(tipoVenta = case_when(spa > 0 & shop > 0 ~ "Mixta",
+                                   spa > 0 & shop == 0 ~ "Pet spa",
+                                   spa == 0 & shop > 0 ~ "Pet shop"))
+     
+    if (input$lineaNegocio == "Total"){
+
+    dfvalor <- df2 %>% 
+      ungroup() %>% 
+      filter(anio == input$Year & mes == input$Mes) %>% 
+      group_by(anio, mes) %>% 
+      summarise(maximo = max(montoVenta))
+    
+    valor <- dfvalor$maximo %>% 
+      round(digits = 2)
+    
+    formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+    cat(formatted_value)
+    
+    }
+    else {
+      dfvalor <- df2 %>% 
+        ungroup() %>% 
+        filter(anio == input$Year & mes == input$Mes & tipoVenta == input$lineaNegocio) %>% 
+        group_by(anio, mes) %>% 
+        summarise(maximo = max(montoVenta))
+      
+      valor <- dfvalor$maximo %>% 
+        round(digits = 2)
+      
+      formatted_value <- paste("S/", format(valor, big.mark = ",", decimal.mark = ".", nsmall = 2))
+      cat(formatted_value)
+    }
+
+    
+  })
+}
+
+# 5. EJECUCI??N DE APLICACI??N ----- 
+shinyApp(ui = ui, server = server)
