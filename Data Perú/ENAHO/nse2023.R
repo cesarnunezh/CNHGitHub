@@ -19,10 +19,37 @@ p_load(rio, cluster, factoextra, tidyverse, ggrepel, scatterplot3d,
 
 ## 2.1. A nivel de hogar -----
 setwd(dirEnaho)
-sumaria <- read_dta("sumaria-2023.dta",
-                    col_select = c(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato, 
-                                   percepho, mieperho, gashog2d, linpe, linea, gashog1d, pobrezav, 
-                                   pobreza, ingtexhd, inghog1d, factor07))
+sumaria <- read_dta("sumaria-2023.dta") %>%
+  mutate(p=12) %>% 
+  mutate(
+    gpcrg3 = (gru11hd + gru12hd1 + gru12hd2 + gru13hd1 + gru13hd2 + gru13hd3) / (p * mieperho * ld * i01),
+    gpcrg6 = (g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6 + ig06hd) / (p * mieperho * ld * i01),
+    gpcrg8 = (sg23 + sig24) / (p * mieperho * ld * i01),
+    gpcrg9 = (gru14hd + gru14hd1 + gru14hd2 + gru14hd3 + gru14hd4 + gru14hd5 + sg25 + sig26) / (p * mieperho * ld * i01),
+    gpcrg10 = (gru21hd + gru22hd1 + gru22hd2 + gru23hd1 + gru23hd2 + gru23hd3 + gru24hd) / (p * mieperho * ld * i02),
+    gpcrg12 = (gru31hd + gru32hd1 + gru32hd2 + gru33hd1 + gru33hd2 + gru33hd3 + gru34hd) / (p * mieperho * ld * i03),
+    gpcrg14 = (gru41hd + gru42hd1 + gru42hd2 + gru43hd1 + gru43hd2 + gru43hd3 + gru44hd + sg421 + sg42d1 + sg423 + sg42d3) / (p * mieperho * ld * i04),
+    gpcrg16 = (gru51hd + gru52hd1 + gru52hd2 + gru53hd1 + gru53hd2 + gru53hd3 + gru54hd) / (p * mieperho * ld * i05),
+    gpcrg18 = (gru61hd + gru62hd1 + gru62hd2 + gru63hd1 + gru63hd2 + gru63hd3 + gru64hd + g07hd + ig08hd + sg422 + sg42d2) / (p * mieperho * ld * i06),
+    gpcrg19 = (gru71hd + gru72hd1 + gru72hd2 + gru73hd1 + gru73hd2 + gru73hd3 + gru74hd + sg42 + sg42d) / (p * mieperho * ld * i07),
+    gpcrg21 = (gru81hd + gru82hd1 + gru82hd2 + gru83hd1 + gru83hd2 + gru83hd3 + gru84hd) / (p * mieperho * ld * i08)
+  )
+
+# Recodificando por grupo de gastos
+sumaria <- sumaria %>%
+  mutate(
+    gpgru2 = gpcrg3,
+    gpgru3 = gpcrg6 + gpcrg8 + gpcrg9,
+    gpgru4 = gpcrg10,
+    gpgru5 = gpcrg12,
+    gpgru6 = gpcrg14,
+    gpgru7 = gpcrg16,
+    gpgru8 = gpcrg18,
+    gpgru9 = gpcrg19,
+    gpgru10 = gpcrg21,
+    gpgru1 = gpgru2 + gpgru3,
+    gpgru0 = gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10
+  )
 
 mod1 <- read_dta("enaho01-2023-100.dta",
                  col_select = c(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato,
@@ -332,3 +359,5 @@ writeData(wb2, "Distribución por Edad", distEdad)
 
 # Guardar el archivo Excel
 saveWorkbook(wb2, "distribucion.xlsx", overwrite = TRUE)
+
+## 5. Desagregación del gasto
