@@ -5,8 +5,8 @@
 #*******************************************************************************
 
 # 1. Librerías y direcciones ---------------------------------------------------
-dirEnaho <- "C:/Users/User/OneDrive - The University of Chicago/2. Trabajo/Análisis NSE/Data"
-dirOutput <- "C:/Users/User/OneDrive - The University of Chicago/2. Trabajo/Análisis NSE/Output"
+dirEnaho <- "C:/Users/canun/OneDrive - The University of Chicago/2. Trabajo/Análisis NSE/Data"
+dirOutput <- "C:/Users/canun/OneDrive - The University of Chicago/2. Trabajo/Análisis NSE/Output"
 library(haven)
 library(dplyr)
 library(writexl)
@@ -22,32 +22,32 @@ setwd(dirEnaho)
 sumaria <- read_dta("sumaria-2023.dta") %>%
   mutate(p=12) %>% 
   mutate(
-    gpcrg3 = (gru11hd + gru12hd1 + gru12hd2 + gru13hd1 + gru13hd2 + gru13hd3) / (p * mieperho * ld * i01),
-    gpcrg6 = (g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6 + ig06hd) / (p * mieperho * ld * i01),
-    gpcrg8 = (sg23 + sig24) / (p * mieperho * ld * i01),
-    gpcrg9 = (gru14hd + gru14hd1 + gru14hd2 + gru14hd3 + gru14hd4 + gru14hd5 + sg25 + sig26) / (p * mieperho * ld * i01),
-    gpcrg10 = (gru21hd + gru22hd1 + gru22hd2 + gru23hd1 + gru23hd2 + gru23hd3 + gru24hd) / (p * mieperho * ld * i02),
-    gpcrg12 = (gru31hd + gru32hd1 + gru32hd2 + gru33hd1 + gru33hd2 + gru33hd3 + gru34hd) / (p * mieperho * ld * i03),
-    gpcrg14 = (gru41hd + gru42hd1 + gru42hd2 + gru43hd1 + gru43hd2 + gru43hd3 + gru44hd + sg421 + sg42d1 + sg423 + sg42d3) / (p * mieperho * ld * i04),
-    gpcrg16 = (gru51hd + gru52hd1 + gru52hd2 + gru53hd1 + gru53hd2 + gru53hd3 + gru54hd) / (p * mieperho * ld * i05),
-    gpcrg18 = (gru61hd + gru62hd1 + gru62hd2 + gru63hd1 + gru63hd2 + gru63hd3 + gru64hd + g07hd + ig08hd + sg422 + sg42d2) / (p * mieperho * ld * i06),
-    gpcrg19 = (gru71hd + gru72hd1 + gru72hd2 + gru73hd1 + gru73hd2 + gru73hd3 + gru74hd + sg42 + sg42d) / (p * mieperho * ld * i07),
-    gpcrg21 = (gru81hd + gru82hd1 + gru82hd2 + gru83hd1 + gru83hd2 + gru83hd3 + gru84hd) / (p * mieperho * ld * i08)
+    gpcrg3 = (gru11hd + gru12hd1 + gru12hd2 + gru13hd1 + gru13hd2 + gru13hd3) / (p ),
+    gpcrg6 = (g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6 + ig06hd) / (p  ),
+    gpcrg8 = (sg23 + sig24) / (p  ),
+    gpcrg9 = (gru14hd + gru14hd1 + gru14hd2 + gru14hd3 + gru14hd4 + gru14hd5 + sg25 + sig26) / (p ),
+    gpcrg10 = (gru21hd + gru22hd1 + gru22hd2 + gru23hd1 + gru23hd2 + gru23hd3 + gru24hd) / (p ),
+    gpcrg12 = (gru31hd + gru32hd1 + gru32hd2 + gru33hd1 + gru33hd2 + gru33hd3 + gru34hd) / (p ),
+    gpcrg14 = (gru41hd + gru42hd1 + gru42hd2 + gru43hd1 + gru43hd2 + gru43hd3 + gru44hd + sg421 + sg42d1 + sg423 + sg42d3) / (p ),
+    gpcrg16 = (gru51hd + gru52hd1 + gru53hd1 + gru53hd2 + gru53hd3 + gru54hd) / (p ),
+    gpcrg18 = (gru61hd + gru62hd1 + gru62hd2 + gru63hd1 + gru63hd2 + gru63hd3 + gru64hd + g07hd + ig08hd + sg422 + sg42d2) / (p ),
+    gpcrg19 = (gru71hd + gru72hd1 + gru72hd2 + gru73hd1 + gru73hd2 + gru73hd3 + gru74hd + sg42 + sg42d) / (p   ),
+    gpcrg21 = (gru81hd + gru82hd1 + gru82hd2 + gru83hd1 + gru83hd2 + gru83hd3 + gru84hd) / (p   )
   )
 
 # Recodificando por grupo de gastos
 sumaria <- sumaria %>%
   mutate(
-    gpgru2 = gpcrg3,
-    gpgru3 = gpcrg6 + gpcrg8 + gpcrg9,
-    gpgru4 = gpcrg10,
-    gpgru5 = gpcrg12,
-    gpgru6 = gpcrg14,
-    gpgru7 = gpcrg16,
-    gpgru8 = gpcrg18,
-    gpgru9 = gpcrg19,
-    gpgru10 = gpcrg21,
-    gpgru1 = gpgru2 + gpgru3,
+    gpgru2 = gpcrg3, ## "G011.Alimentos dentro del hogar real"
+    gpgru3 = gpcrg6 + gpcrg8 + gpcrg9, ##"G012.Alimentos fuera del hogar real"
+    gpgru4 = gpcrg10, ## "G02.Vestido y calzado real"
+    gpgru5 = gpcrg12, ## "G03.Alquiler de Vivienda y combustible real"
+    gpgru6 = gpcrg14, ## "G04.Muebles y enseres real"
+    gpgru7 = gpcrg16, ## "G05.Cuidados de la salud real"
+    gpgru8 = gpcrg18, ## "G06.Transportes y comunicaciones real"
+    gpgru9 = gpcrg19, ## "G07.Esparcimiento diversion y cultura real"
+    gpgru10 = gpcrg21, ## "G08.otros gastos en bienes y servicios real"
+    gpgru1 = gpgru2 + gpgru3, ##"G01.Total en Alimentos real"
     gpgru0 = gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10
   )
 
@@ -209,7 +209,7 @@ baseHogares %>% ggplot() +
 # 3. Generación de NSE
 ## 3.1 Clusterización con K-Means
 baseHogares <- baseHogares %>% 
-  select(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato, factor07, mieperho, nse, gasPC, gastoMensual, contador) %>% 
+  select(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato, factor07, mieperho, nse, gasPC, gastoMensual, contador, gpgru0, gpgru1, gpgru2, gpgru3, gpgru4, gpgru5, gpgru6, gpgru7, gpgru8, gpgru9, gpgru10) %>% 
   mutate(gasPC = log(gasPC)) %>% 
   mutate(gasPC = scale(gasPC),
          nse = scale (nse))
@@ -331,11 +331,12 @@ basePersonas2 <- basePersonas %>%
   left_join(baseHogares, by = c("aÑo", "mes", "conglome", "vivienda", "hogar", "ubigeo", "dominio", "estrato")) %>% 
   mutate(sexo = case_when(p207 == 2 ~ "Mujer",
                           TRUE ~ "Hombre"),
-         grupoEdad = case_when(p208a < 25 ~ "Menos de 25 años",
-                               p208a >=25 & p208a < 45 ~ "De 25 a 44 años",
-                               p208a >=45 & p208a < 65 ~ "De 45 a 64 años",
+         grupoEdad = case_when(p208a < 5 ~ "0 a 4 años",
+                               p208a >= 5 & p208a < 15 ~ "5 a 14 años",
+                               p208a >=15 & p208a < 45 ~ "15 a 44 años",
+                               p208a >=45 & p208a < 60 ~ "45 a 59 años",
                                p208a == NA ~ NA,
-                               TRUE ~ "De 65 años a más")) %>% 
+                               TRUE ~ "60 a más años")) %>% 
   filter(((p204==1 & p205==2) | (p204==2 & p206==1)))
 
 design <- svydesign(id = ~conglome,  # Variable de conglomerados
@@ -346,6 +347,7 @@ design <- svydesign(id = ~conglome,  # Variable de conglomerados
 
 distSexo <- svyby(~contador, ~ sexo + nseOpcion1, design, svytotal)
 distEdad <- svyby(~contador, ~ grupoEdad + nseOpcion1, design, svytotal)
+distSexoEdad <- svyby(~contador, ~ sexo + grupoEdad + nseOpcion1, design, svytotal)
 
 setwd(dirOutput)
 
@@ -357,7 +359,24 @@ writeData(wb2, "Distribución por Sexo", distSexo)
 addWorksheet(wb2, "Distribución por Edad")
 writeData(wb2, "Distribución por Edad", distEdad)
 
+addWorksheet(wb2, "Distribución por Sexo y Edad")
+writeData(wb2, "Distribución por Sexo y Edad", distSexoEdad)
+
 # Guardar el archivo Excel
 saveWorkbook(wb2, "distribucion.xlsx", overwrite = TRUE)
 
 ## 5. Desagregación del gasto
+library(survey)
+design <- svydesign(id = ~conglome,  # Variable de conglomerados
+                    strata = ~estrato,   # Variable de estratos
+                    weights = ~factor07,     # Variable de pesos
+                    data = baseHogares,
+                    nest = FALSE) 
+
+gastoDesagregado <- svyby(~gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10, ~nseOpcion1, design, svymean)
+colnames(gastoDesagregado)[1:9] <- c("NSE", "Alimentos", "Vestido y calzado", "Alquiler de vivienda y combustible", "Muebles y enseres", "Cuidados de la salud", "Transportes y comunicaciones", "Esparcimiento, diversión y cultura", "Otros gastos en bienes y servicios")
+
+wb3 <- createWorkbook()
+addWorksheet(wb3, "Grupos de gasto")
+writeData(wb3, "Grupos de gasto", gastoDesagregado)
+saveWorkbook(wb3, "gastogrupos.xlsx", overwrite = TRUE)
