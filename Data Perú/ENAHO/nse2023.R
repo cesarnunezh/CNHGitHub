@@ -212,17 +212,17 @@ baseHogares <- baseHogares %>%
   select(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato, factor07, mieperho, nse, gasPC, gastoMensual, contador, gpgru0, gpgru1, gpgru2, gpgru3, gpgru4, gpgru5, gpgru6, gpgru7, gpgru8, gpgru9, gpgru10) %>% 
   mutate(gasPC = log(gasPC)) %>% 
   mutate(gasPC = scale(gasPC),
-         nse = scale (nse))
+         nseNew = scale (nse))
 
 baseHogares %>% ggplot() +
-  aes(x = nse, y = gasPC)+
+  aes(x = nseNew, y = gasPC)+
   geom_point() 
 
 library(factoextra)
 
 set.seed(2023)
 tic()
-km <- kmeans(baseHogares %>% select(nse, gasPC), 
+km <- kmeans(baseHogares %>% select(nseNew, gasPC), 
              centers = 7,     # N??mero de Cluster
              iter.max = 100,  # N??mero de iteraciones m??xima
              nstart = 15,     # N??mero de puntos iniciales
@@ -232,7 +232,7 @@ km <- kmeans(baseHogares %>% select(nse, gasPC),
 print(km)
 prop.table(km$size)
 
-fviz_cluster(km, data = baseHogares %>% select(nse, gasPC), ellipse.type = "convex") +
+fviz_cluster(km, data = baseHogares %>% select(nseNew, gasPC), ellipse.type = "convex") +
   theme_classic()
 
 toc()
@@ -373,10 +373,39 @@ design <- svydesign(id = ~conglome,  # Variable de conglomerados
                     data = baseHogares,
                     nest = FALSE) 
 
-gastoDesagregado <- svyby(~gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10, ~nseOpcion1, design, svymean)
+gastoDesagregado <- svyby(~gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10 + gpgru0, ~nseOpcion1, design, svymean)
 colnames(gastoDesagregado)[1:9] <- c("NSE", "Alimentos", "Vestido y calzado", "Alquiler de vivienda y combustible", "Muebles y enseres", "Cuidados de la salud", "Transportes y comunicaciones", "Esparcimiento, diversión y cultura", "Otros gastos en bienes y servicios")
+gastoDesagregado <- gastoDesagregado[1:9]
+
+
+baseHogares <- baseHogares %>% 
+  mutate(gpgru1PC = gpgru1 / mieperho,
+         gpgru4PC = gpgru4 / mieperho,
+         gpgru5PC = gpgru5 / mieperho,
+         gpgru6PC = gpgru6 / mieperho,
+         gpgru7PC = gpgru7 / mieperho,
+         gpgru8PC = gpgru8 / mieperho,
+         gpgru9PC = gpgru9 / mieperho,
+         gpgru10PC = gpgru10 / mieperho,
+         gpgru0PC = gpgru0 / mieperho)
+
+library(survey)
+design <- svydesign(id = ~conglome,  # Variable de conglomerados
+                    strata = ~estrato,   # Variable de estratos
+                    weights = ~factor07,     # Variable de pesos
+                    data = baseHogares,
+                    nest = FALSE) 
+
+gastoDesagregadoPC <- svyby(~gpgru1PC + gpgru4PC + gpgru5PC + gpgru6PC + gpgru7PC + gpgru8PC + gpgru9PC + gpgru10PC + gpgru0PC, ~nseOpcion1, design, svymean)
+colnames(gastoDesagregadoPC)[1:10] <- c("NSE", "Alimentos", "Vestido y calzado", "Alquiler de vivienda y combustible", "Muebles y enseres", "Cuidados de la salud", "Transportes y comunicaciones", "Esparcimiento, diversión y cultura", "Otros gastos en bienes y servicios", "Total")
+gastoDesagregadoPC <- gastoDesagregadoPC[1:10]
 
 wb3 <- createWorkbook()
 addWorksheet(wb3, "Grupos de gasto")
 writeData(wb3, "Grupos de gasto", gastoDesagregado)
+
+addWorksheet(wb3, "Grupos de gasto - Per cápita")
+writeData(wb3, "Grupos de gasto - Per cápita", gastoDesagregadoPC)
+
 saveWorkbook(wb3, "gastogrupos.xlsx", overwrite = TRUE)
+
