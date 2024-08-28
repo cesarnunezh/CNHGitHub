@@ -19,36 +19,22 @@ p_load(rio, cluster, factoextra, tidyverse, ggrepel, scatterplot3d,
 
 ## 2.1. A nivel de hogar -----
 setwd(dirEnaho)
-sumaria <- read_dta("sumaria-2023.dta") %>%
+sumaria <- read_dta("sumaria-2023-12g.dta") %>%
   mutate(p=12) %>% 
   mutate(
-    gpcrg3 = (gru11hd + gru12hd1 + gru12hd2 + gru13hd1 + gru13hd2 + gru13hd3) / (p ),
-    gpcrg6 = (g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 + g05hd6 + ig06hd) / (p  ),
-    gpcrg8 = (sg23 + sig24) / (p  ),
-    gpcrg9 = (gru14hd + gru14hd1 + gru14hd2 + gru14hd3 + gru14hd4 + gru14hd5 + sg25 + sig26) / (p ),
-    gpcrg10 = (gru21hd + gru22hd1 + gru22hd2 + gru23hd1 + gru23hd2 + gru23hd3 + gru24hd) / (p ),
-    gpcrg12 = (gru31hd + gru32hd1 + gru32hd2 + gru33hd1 + gru33hd2 + gru33hd3 + gru34hd) / (p ),
-    gpcrg14 = (gru41hd + gru42hd1 + gru42hd2 + gru43hd1 + gru43hd2 + gru43hd3 + gru44hd + sg421 + sg42d1 + sg423 + sg42d3) / (p ),
-    gpcrg16 = (gru51hd + gru52hd1 + gru53hd1 + gru53hd2 + gru53hd3 + gru54hd) / (p ),
-    gpcrg18 = (gru61hd + gru62hd1 + gru62hd2 + gru63hd1 + gru63hd2 + gru63hd3 + gru64hd + g07hd + ig08hd + sg422 + sg42d2) / (p ),
-    gpcrg19 = (gru71hd + gru72hd1 + gru72hd2 + gru73hd1 + gru73hd2 + gru73hd3 + gru74hd + sg42 + sg42d) / (p   ),
-    gpcrg21 = (gru81hd + gru82hd1 + gru82hd2 + gru83hd1 + gru83hd2 + gru83hd3 + gru84hd) / (p   )
-  )
-
-# Recodificando por grupo de gastos
-sumaria <- sumaria %>%
-  mutate(
-    gpgru2 = gpcrg3, ## "G011.Alimentos dentro del hogar real"
-    gpgru3 = gpcrg6 + gpcrg8 + gpcrg9, ##"G012.Alimentos fuera del hogar real"
-    gpgru4 = gpcrg10, ## "G02.Vestido y calzado real"
-    gpgru5 = gpcrg12, ## "G03.Alquiler de Vivienda y combustible real"
-    gpgru6 = gpcrg14, ## "G04.Muebles y enseres real"
-    gpgru7 = gpcrg16, ## "G05.Cuidados de la salud real"
-    gpgru8 = gpcrg18, ## "G06.Transportes y comunicaciones real"
-    gpgru9 = gpcrg19, ## "G07.Esparcimiento diversion y cultura real"
-    gpgru10 = gpcrg21, ## "G08.otros gastos en bienes y servicios real"
-    gpgru1 = gpgru2 + gpgru3, ##"G01.Total en Alimentos real"
-    gpgru0 = gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10
+    gpgru2 = (gru21hd + gru22hd + gru23hd + gru24hd + gru25hd + gru26hd + gru21hd1 + gru22hd1 + gru25hd1 + gru26hd1 + gru27hd1 + gru20hd) / p, ## "G02. Bebidas alcohólicas y estupefacientes"
+    gpgru3 = (gru31hd + gru32hd + gru33hd + gru34hd + gru35hd + gru36hd + gru37hd) / p, ##"G03. Vestido y calzado"
+    gpgru4 = (gru41hd + gru42hd + gru43hd + gru44hd + gru45hd + gru46hd + gru47hd + gru41hd1 + gru45hd1 + gru46hd1 + gru47hd1) / p, ## "G04. Alojamiento , agua, electricidad, gas y otros combustibles"
+    gpgru5 = (gru51hd + gru52hd + gru53hd + gru54hd + gru55hd + gru56hd + gru57hd + gru51hd1 + gru52hd1 + gru53hd1 + gru55hd1 + gru56hd1 + gru57hd1 + sg421 + sg42d1) / p, ## "G05. Muebles, enseres y mantenimiento de la vivienda"
+    gpgru6 = (gru61hd + gru62hd + gru64hd + gru65hd + gru66hd + gru67hd + gru60hd) / p, ## "G06. Salud"
+    gpgru7 = (gru71hd + gru72hd + gru73hd + gru74hd + gru75hd + gru76hd + gru77hd + gru71hd1 + gru72hd1 + gru73hd1 + gru74hd1 + gru75hd1 + gru76hd1 + gru71hd2 + gru72hd2 + gru75hd2 + gru76hd2 + gru77hd2 + g07hd1 + g07hd2 + ig08hd1 + ig08hd2 + sg422 + sg42d2) / p, ## "G07. Transporte"
+    gpgru8 = (gru81hd + gru82hd + gru83hd + gru84hd + gru85hd + gru86hd + gru87hd + sg42d) / p, ## "G08. Comunicaciones"
+    gpgru9 = (gru91hd + gru92hd + gru93hd + gru94hd + gru95hd + gru96hd + gru97hd + gru91hd1 + gru92hd1 + gru93hd1 + gru94hd1 + gru95hd1 + gru96hd1 + gru97hd1 + gru91hd3 + gru92hd3 + gru93hd3 + gru94hd3 + gru95hd3 + gru96hd3 + gru90hd + sg42 + sg42d) / p, ## "G09. Recreación y cultura, Otros bienes y servicios"
+    gpgru10 = (gru101hd + gru102hd + gru103hd + gru104hd + gru105hd + gru106hd) / p, ## "G10. Educación"
+    gpgru11 = (gru111hd + gru112hd + gru113hd + gru114hd + gru115hd + gru116hd + gru110hd + gru111hd2 + gru112hd2 + gru113hd2 + gru114hd2 + gru115hd2 + gru116hd2 + gru110hd2 + gru111hd1 + gru112hd1 + gru115hd1 + gru116hd1 + gru117hd1 + g05hd + g05hd1 + g05hd2 + g05hd3 + g05hd4 + g05hd5 +g05hd6 +ig06hd + sg23 + sig24 + sg25 + sig26) / p, ## "G11. Restaurantes y hoteles, alimentos fuera del hogar"
+    gpgru12 = (gru121hd + gru122hd + gru123hd + gru124hd + gru125hd + gru126hd + gru127hd + gru121hd3 + gru122hd3 + gru123hd3 + gru124hd3 + gru125hd3 + gru126hd3 + gru121hd2 + gru121hd4 + gru122hd4 + gru125hd4 + gru126hd4 + gru127hd4) / p, ## "G12. Bienes y servicios diversos, cuidado personal"
+    gpgru1 = (gru11hd + gru12hd + gru13hd + gru14hd + gru15hd + gru16hd + gru10hd) / p, ##"G01. Alimentos dentro del hogar"
+    gpgru0 = gpgru1 + gpgru2 + gpgru3 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10 + gpgru11 + gpgru12
   )
 
 mod1 <- read_dta("enaho01-2023-100.dta",
@@ -197,8 +183,8 @@ baseHogares <-  baseHogares %>%
 baseHogares <- baseHogares %>% 
   mutate(nse = rowSums(select(., nivEducJH, segJH, piso, saneamiento, auto, servicioDomestico,
                               computadora, refrigerador, lavadora, tvcable, internet), na.rm = TRUE),
-         gasPC = gashog1d/mieperho,
-         gastoMensual = gashog1d/12,
+         gasPC = gpgru0/mieperho,
+         gastoMensual = gpgru0,
          contador = 1) %>% 
   filter(gasPC != 0)
 
@@ -209,7 +195,7 @@ baseHogares %>% ggplot() +
 # 3. Generación de NSE
 ## 3.1 Clusterización con K-Means
 baseHogares <- baseHogares %>% 
-  select(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato, factor07, mieperho, nse, gasPC, gastoMensual, contador, gpgru0, gpgru1, gpgru2, gpgru3, gpgru4, gpgru5, gpgru6, gpgru7, gpgru8, gpgru9, gpgru10) %>% 
+  select(aÑo, mes, conglome, vivienda, hogar, ubigeo, dominio, estrato, factor07, mieperho, nse, gasPC, gastoMensual, contador, gpgru0, gpgru1, gpgru2, gpgru3, gpgru4, gpgru5, gpgru6, gpgru7, gpgru8, gpgru9, gpgru10, gpgru11, gpgru12) %>% 
   mutate(gasPC = log(gasPC)) %>% 
   mutate(gasPC = scale(gasPC),
          nseNew = scale (nse))
@@ -224,7 +210,7 @@ set.seed(2023)
 tic()
 km <- kmeans(baseHogares %>% select(nseNew, gasPC), 
              centers = 7,     # N??mero de Cluster
-             iter.max = 100,  # N??mero de iteraciones m??xima
+             iter.max = 1000,  # N??mero de iteraciones m??xima
              nstart = 15,     # N??mero de puntos iniciales
              algorithm = "Lloyd")
 
@@ -240,13 +226,13 @@ toc()
 baseHogares$cluster <- km$cluster
 
 baseHogares <- baseHogares %>% 
-  mutate(nseOpcion1 = case_when(cluster == 3 ~ "E",
-                              cluster == 2 ~ "D",
-                              cluster == 4 ~ "C1",
-                              cluster == 7 ~ "C2",
-                              cluster == 1 ~ "B1",
-                              cluster == 5 ~ "B2",
-                              cluster == 6 ~ "A"))
+  mutate(nseOpcion1 = case_when(cluster == 7 ~ "E",
+                                cluster == 5 ~ "D",
+                                cluster == 6 ~ "C1",
+                                cluster == 3 ~ "C2",
+                                cluster == 1 ~ "B1",
+                                cluster == 2 ~ "B2",
+                                cluster == 4 ~ "A"))
 
 library(survey)
 design <- svydesign(id = ~conglome,  # Variable de conglomerados
@@ -373,13 +359,16 @@ design <- svydesign(id = ~conglome,  # Variable de conglomerados
                     data = baseHogares,
                     nest = FALSE) 
 
-gastoDesagregado <- svyby(~gpgru1 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10 + gpgru0, ~nseOpcion1, design, svymean)
-colnames(gastoDesagregado)[1:9] <- c("NSE", "Alimentos", "Vestido y calzado", "Alquiler de vivienda y combustible", "Muebles y enseres", "Cuidados de la salud", "Transportes y comunicaciones", "Esparcimiento, diversión y cultura", "Otros gastos en bienes y servicios")
-gastoDesagregado <- gastoDesagregado[1:9]
+gastoDesagregado <- svyby(~gpgru1 + gpgru2 + gpgru3 + gpgru4 + gpgru5 + gpgru6 + gpgru7 + gpgru8 + gpgru9 + gpgru10 + gpgru11 + gpgru12 + gpgru0, ~nseOpcion1, design, svymean)
+colnames(gastoDesagregado)[1:13] <- c("NSE", "Alimentos", "Bebidas alcoholicas, estupefacientes y tabaco", "Vestido y calzado", "Alojamiento, agua, electricidad, gas, y guardianía", "Muebles, enseres y mantenimiento de la vivienda", "Salud", "Transporte", "Comunicaciones", "Recreación y cultura", "Educación", "Restaurantes y hoteles, alimentos fuera del hogar", "Bienes y servicios diversos")
+gastoDesagregado <- gastoDesagregado[1:13]
 
 
 baseHogares <- baseHogares %>% 
-  mutate(gpgru1PC = gpgru1 / mieperho,
+  mutate(gpgru0PC = gpgru0 / mieperho,
+         gpgru1PC = gpgru1 / mieperho,
+         gpgru2PC = gpgru2 / mieperho,
+         gpgru3PC = gpgru3 / mieperho,
          gpgru4PC = gpgru4 / mieperho,
          gpgru5PC = gpgru5 / mieperho,
          gpgru6PC = gpgru6 / mieperho,
@@ -387,7 +376,8 @@ baseHogares <- baseHogares %>%
          gpgru8PC = gpgru8 / mieperho,
          gpgru9PC = gpgru9 / mieperho,
          gpgru10PC = gpgru10 / mieperho,
-         gpgru0PC = gpgru0 / mieperho)
+         gpgru11PC = gpgru11 / mieperho,
+         gpgru12PC = gpgru12 / mieperho)
 
 library(survey)
 design <- svydesign(id = ~conglome,  # Variable de conglomerados
@@ -396,9 +386,9 @@ design <- svydesign(id = ~conglome,  # Variable de conglomerados
                     data = baseHogares,
                     nest = FALSE) 
 
-gastoDesagregadoPC <- svyby(~gpgru1PC + gpgru4PC + gpgru5PC + gpgru6PC + gpgru7PC + gpgru8PC + gpgru9PC + gpgru10PC + gpgru0PC, ~nseOpcion1, design, svymean)
-colnames(gastoDesagregadoPC)[1:10] <- c("NSE", "Alimentos", "Vestido y calzado", "Alquiler de vivienda y combustible", "Muebles y enseres", "Cuidados de la salud", "Transportes y comunicaciones", "Esparcimiento, diversión y cultura", "Otros gastos en bienes y servicios", "Total")
-gastoDesagregadoPC <- gastoDesagregadoPC[1:10]
+gastoDesagregadoPC <- svyby(~gpgru1PC + gpgru2PC + gpgru3PC + gpgru4PC + gpgru5PC + gpgru6PC + gpgru7PC + gpgru8PC + gpgru9PC + gpgru10PC + gpgru11PC + gpgru12PC + gpgru0PC, ~nseOpcion1, design, svymean)
+colnames(gastoDesagregadoPC)[1:13] <- c("NSE", "Alimentos", "Bebidas alcoholicas, estupefacientes y tabaco", "Vestido y calzado", "Alojamiento, agua, electricidad, gas, y guardianía", "Muebles, enseres y mantenimiento de la vivienda", "Salud", "Transporte", "Comunicaciones", "Recreación y cultura", "Educación", "Restaurantes y hoteles, alimentos fuera del hogar", "Bienes y servicios diversos")
+gastoDesagregadoPC <- gastoDesagregadoPC[1:13]
 
 wb3 <- createWorkbook()
 addWorksheet(wb3, "Grupos de gasto")
