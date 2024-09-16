@@ -10,7 +10,7 @@ library(bsicons)
 
 #1. Importación y limpieza de base de datos ----
 
-dir <- 'C:/Users/User/OneDrive - Universidad del Pacífico/2. La Casa de Sammy/1. Finanzas/2. Ventas'
+dir <- 'C:/Users/canun/OneDrive - Universidad del Pacífico/2. La Casa de Sammy/1. Finanzas/2. Ventas'
 setwd(dir)
 
 df <- read.xlsx('ReporteVentas.xlsx', startRow = 9) 
@@ -52,7 +52,7 @@ df <- df %>%
          cantItem = as.numeric(cantItem))
 
 df3 <- df %>% 
-  filter(str_detect(descripcion, "y corte|\\+ cort|\\+ reto|\\y retoque|\\y recort"))
+  filter(str_detect(descripcion, "y corte|//+ cort|//+ reto|//y retoque|//y recort"))
 
 df3 <- df3 %>% 
   mutate(precioUnitarioItem = case_when(str_detect(descripcion, "cort") ~ precioUnitarioItem - 25,
@@ -84,7 +84,7 @@ df3 <- df3 %>%
 
 
 df <- df %>% 
-  filter(!str_detect(descripcion, "y corte|\\+ cort|\\+ reto|\\y retoque|\\y recort")) %>% 
+  filter(!str_detect(descripcion, "y corte|//+ cort|//+ reto|//y retoque|//y recort")) %>% 
   rbind(df3)
 
 
@@ -305,12 +305,25 @@ server <- function(input, output) {
   output$graph1 <- renderPlot({
     
     # Tabla diaria que divide las ventas por linea de negocio
+    
+    nuevasLineas  <- df %>%
+      group_by(lineaNegocio, anio, mes,dia) %>% 
+      summarise(montoDiario=sum(as.numeric(totalItem))) %>% 
+      filter(dia <= day(now())) %>% 
+      group_by(lineaNegocio,anio,mes) %>% 
+      summarise(montoMensual=sum(as.numeric(montoDiario))) %>% 
+      group_by(anio, mes) %>%
+      summarise(montoMensual = sum(montoMensual), .groups = 'drop') %>% 
+      mutate(lineaNegocio = "Total")
+    
+    
     df %>%
       group_by(lineaNegocio, anio, mes,dia) %>% 
       summarise(montoDiario=sum(as.numeric(totalItem))) %>% 
       filter(dia <= day(now())) %>% 
       group_by(lineaNegocio,anio,mes) %>% 
       summarise(montoMensual=sum(as.numeric(montoDiario))) %>% 
+      bind_rows(nuevasLineas) %>%  
       ggplot() +
       aes(x = mes, y = montoMensual, color = lineaNegocio) +
       stat_summary(aes(y=montoMensual), fun ="mean", geom="point") +
@@ -318,7 +331,9 @@ server <- function(input, output) {
       labs(x = "Mes",
            y = "Monto (en soles)") +
       labs(title = "Evolución de ventas mensuales a la fecha", 
-           color = "Línea de negocio")
+           color = "Línea de negocio") +
+      scale_fill_manual(values = c("Pet shop" = "#54B6B5", "Pet spa" = "#E8BB82", "Total" = "#031B6A")) +
+      theme(axis.text.x = element_text(angle = 0, hjust = 1))
     
   }) 
   
@@ -680,3 +695,31 @@ server <- function(input, output) {
 
 # 5. EJECUCI??N DE APLICACI??N ----- 
 shinyApp(ui = ui, server = server)
+
+
+
+nuevasLineas  <- df %>%
+  group_by(lineaNegocio, anio, mes,dia) %>% 
+  summarise(montoDiario=sum(as.numeric(totalItem))) %>% 
+  group_by(lineaNegocio,anio,mes) %>% 
+  summarise(montoMensual=sum(as.numeric(montoDiario))) %>% 
+  group_by(anio, mes) %>%
+  summarise(montoMensual = sum(montoMensual), .groups = 'drop') %>% 
+  mutate(lineaNegocio = "Total")
+
+
+df %>%
+  group_by(lineaNegocio, anio, mes,dia) %>% 
+  summarise(montoDiario=sum(as.numeric(totalItem))) %>% 
+  group_by(lineaNegocio,anio,mes) %>% 
+  summarise(montoMensual=sum(as.numeric(montoDiario))) %>% 
+  bind_rows(nuevasLineas) %>%  
+  ggplot() +
+  aes(x = mes, y = montoMensual, fill = lineaNegocio) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Mes",
+       y = "Monto (en soles)") +
+  labs(title = "Evolución de ventas mensuales a la fecha", 
+       color = "Línea de negocio") +
+  scale_fill_manual(values = c("Pet shop" = "#54B6B5", "Pet spa" = "#E8BB82", "Total" = "#031B6A")) +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
