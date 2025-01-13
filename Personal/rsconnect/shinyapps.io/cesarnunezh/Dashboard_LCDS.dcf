@@ -1,0 +1,13 @@
+name: Dashboard_LCDS
+title: Dashboard_LCDS
+username: cesarnunezh
+account: cesarnunezh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13704026
+bundleId: 9639731
+url: https://cesarnunezh.shinyapps.io/Dashboard_LCDS/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: _chat.txt|chats.ipynb|csvSUNAT.ipynb|DataRunning.ipynb|ReporteVentas.xlsx
