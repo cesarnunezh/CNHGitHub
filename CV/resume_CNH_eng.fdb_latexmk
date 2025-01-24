@@ -1,9 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1736133475.05922 "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_eng.tex" "resume_CNH_eng.pdf" "resume_CNH_eng" 1736133476.58109 0
+["pdflatex"] 1737752383.46236 "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_eng.tex" "resume_CNH_eng.pdf" "resume_CNH_eng" 1737752383.93843 0
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1725550246 1536 02c06700a42be0f5a28664c7273f82e7 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1725550246 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1725550246 1324 c910af8c371558dc20f2d7822f66fe64 ""
-  "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbxti10.tfm" 1725550246 1532 9162035f4e7176612125649e348e2195 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1725550246 1528 abec98dbc43e172678c11b3b9031252a ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm" 1725550246 1512 f21f83efb36853c0b70002322c1ab3ad ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm" 1725550246 1520 eccf95517727cb11801f4f1aee3a21b4 ""
@@ -17,7 +16,6 @@
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1725550247 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1725550248 34811 78b52f49e893bcba91bd7581cdc144c0 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1725550248 32080 340ef9bf63678554ee606688e7b5339d ""
-  "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb" 1725550248 36554 b67dc2cfa451409e100b3fcf5f506509 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1725550248 35752 024fb6c41858982481f6968b5fc26508 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1725550248 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1725550248 37944 359e864bd06cde3b1cf57bb20757fb06 ""
@@ -68,11 +66,11 @@
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk" 1726433881 12644 81615b43825e6b6f12c5fd3144ae5b5a ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1725550253 6829292 f844e677d255fe8fd54d8588d156fa71 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf.cnf" 1725550268 956 bc725f1dae0ef3080944f5011089c94a ""
-  "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_eng.tex" 1736133472 11089 142089cb206acbb64914d433a2b1ea91 ""
+  "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_eng.tex" 1737752382 11809 13a2cf7d13950d25d967b4efcc1c9d7c ""
   "resume.cls" 1694110709 5067 3b3b57f3c8b0790ce01c73fdc59aee7a ""
-  "resume_CNH_eng.aux" 1736133476 162 87159b23cce7c2b923b11c85495bbd6d "pdflatex"
-  "resume_CNH_eng.out" 1736133476 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "resume_CNH_eng.tex" 1736133472 11089 142089cb206acbb64914d433a2b1ea91 ""
+  "resume_CNH_eng.aux" 1737752383 162 87159b23cce7c2b923b11c85495bbd6d "pdflatex"
+  "resume_CNH_eng.out" 1737752383 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "resume_CNH_eng.tex" 1737752382 11809 13a2cf7d13950d25d967b4efcc1c9d7c ""
   (generated)
   "resume_CNH_eng.aux"
   "resume_CNH_eng.log"
