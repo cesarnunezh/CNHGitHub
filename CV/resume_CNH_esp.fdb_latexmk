@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1738375437.92635 "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_esp.tex" "resume_CNH_esp.pdf" "resume_CNH_esp" 1738375438.44446 0
+["pdflatex"] 1738601977.95414 "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_esp.tex" "resume_CNH_esp.pdf" "resume_CNH_esp" 1738601979.61606 0
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1725550246 1536 02c06700a42be0f5a28664c7273f82e7 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1725550246 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1725550246 1324 c910af8c371558dc20f2d7822f66fe64 ""
@@ -67,11 +67,11 @@
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk" 1726433881 12644 81615b43825e6b6f12c5fd3144ae5b5a ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1725550253 6829292 f844e677d255fe8fd54d8588d156fa71 ""
   "c:/Users/canun/AppData/Roaming/TinyTeX/texmf.cnf" 1725550268 956 bc725f1dae0ef3080944f5011089c94a ""
-  "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_esp.tex" 1738375437 25582 36b72bb15a5238559eef21bb6dea97b7 ""
+  "d:/1. Documentos/0. Bases de datos/00. GitHub/CNH_rep/CV/resume_CNH_esp.tex" 1738601605 25582 ede3bf8696037f2e32847ef1f90b6eb6 ""
   "resume.cls" 1694110709 5067 3b3b57f3c8b0790ce01c73fdc59aee7a ""
-  "resume_CNH_esp.aux" 1738375438 162 fa61bf9ecf9314f94d51aa32222a725c "pdflatex"
-  "resume_CNH_esp.out" 1738375438 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "resume_CNH_esp.tex" 1738375437 25582 36b72bb15a5238559eef21bb6dea97b7 ""
+  "resume_CNH_esp.aux" 1738601979 162 fa61bf9ecf9314f94d51aa32222a725c "pdflatex"
+  "resume_CNH_esp.out" 1738601979 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "resume_CNH_esp.tex" 1738601605 25582 ede3bf8696037f2e32847ef1f90b6eb6 ""
   (generated)
   "resume_CNH_esp.aux"
   "resume_CNH_esp.log"
